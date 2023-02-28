@@ -10,6 +10,7 @@ const app = express();
 
 //anyadir rutas de origen en cors
 app.use(cors());
+app.use(express.json());
 app.use(router);
 
 dbConnectMySql();

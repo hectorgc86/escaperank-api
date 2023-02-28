@@ -1,9 +1,12 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import { deleteCategoria, getCategoria, getCategorias, postCategoria, putCategoria } from "../controllers/categoria";
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send({ data: "AQUI VAN LOS MODELOS" });
-});
+router.get('/', getCategorias);
+router.get('/:id', getCategoria);
+router.put('/:id', putCategoria);
+router.post('/', postCategoria);
+router.delete('/:id', deleteCategoria);
 
 export { router };
