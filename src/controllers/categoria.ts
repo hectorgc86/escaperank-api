@@ -1,65 +1,61 @@
 import { Request, Response } from "express";
-import { handleHttp } from "../utils/error.handle"; 
-import { CategoriaModel } from '../models/categoria';
+import { handleHttp } from "../utils/error.handle";
+import { obtenerCategorias, insertarCategoria, obtenerCategoria, actualizarCategoria, borrarCategoria } from "../services/categoria";
 
 const getCategoria = async (req: Request, res: Response) => {
-  try{
+  try {
     const { id } = req.params;
-    const record = await CategoriaModel.findOne({ where: { id }});
-    return res.send(record);
-  }catch(e){
+    const result = await obtenerCategoria(id);
+    res.send(result);
+  } catch (e) {
     handleHttp(res, "Error obteniendo categoría", e);
   }
 };
 
 const getCategorias = async (req: Request, res: Response) => {
-  try{
-    const records = await CategoriaModel.findAll();
-    return res.send(records);
-  }catch(e){
+  try {
+    const result = await obtenerCategorias();
+    res.send(result);
+  } catch (e) {
     handleHttp(res, "Error obteniendo categorías", e);
   }
 };
 
-const putCategoria = async (req: Request, res: Response) => {
-  try{
-    const { id } = req.params;
-    const record = await CategoriaModel.findOne({ where: { id }});
-
-    if(!record){
-      return res.send("No se encuentra categoría con ese id");
-    }
-    const updateRecord = await record.update({});
-    return res.send(updateRecord);
-  }catch(e){
-    handleHttp(res, "Error actualizando categoría", e);
-  }
-;}
-
-
 const postCategoria = async (req: Request, res: Response) => {
-  try{
-    const record = await CategoriaModel.create({...req.body });
-    return res.send({ record, mensaje: "Categoría guardada correctamente"});
-  }catch(e){
+  try {
+    const result = await insertarCategoria(req.body);
+    res.send({ result, mensaje: "Categoría guardada correctamente" });
+  } catch (e) {
     handleHttp(res, "Error guardando categoría", e);
   }
 };
 
-
-const deleteCategoria = async (req: Request, res: Response) => {
-  try{
-    const { id } = req.params;
-    const record = await CategoriaModel.findOne({ where: { id }});
-
-    if(!record){
+const putCategoria = async ({params, body}: Request, res: Response) => {
+  try {
+    const { id } = params;
+    const result = await obtenerCategoria(id);
+    if (!result) {
       return res.send("No se encuentra categoría con ese id");
     }
-    const deleteRecord = await record.destroy();
-    return res.send(deleteRecord);
-  }catch(e){
+    const updateResult = await actualizarCategoria(result, body);
+    return res.send(updateResult);
+  } catch (e) {
+    handleHttp(res, "Error actualizando categoría", e);
+  }
+};
+
+const deleteCategoria = async ({ params }: Request, res: Response) => {
+  try {
+    const { id } = params;
+    const result = await obtenerCategoria(id);
+    if (!result) {
+      return res.send("No se encuentra categoría con ese id");
+    }
+    const deleteResult = await borrarCategoria(result);
+    res.send(deleteResult);
+  } catch (e) {
     handleHttp(res, "Error borrando categoría", e);
   }
 };
 
-export { getCategoria, getCategorias, putCategoria, postCategoria, deleteCategoria }
+export { getCategoria, getCategorias, postCategoria, putCategoria, deleteCategoria }
