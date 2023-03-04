@@ -1,12 +1,13 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
-import { Categoria } from "../interfaces/categoria.interface";
+import { Publico } from "../interfaces/publico.interface";
 import { SalaModel } from "./sala";
-import { SalasCategoriasModel } from "./salas_categorias";
+import { SalasPublico } from "../interfaces/salas_publico.interface";
+import { SalasPublicoModel } from "./salas_publico";
 
-export class CategoriaModel extends Model<Categoria> {}
+export class PublicoModel extends Model<Publico> {}
 
-CategoriaModel.init(
+PublicoModel.init(
   {
     id: {
       type: DataTypes.STRING(50),
@@ -24,7 +25,7 @@ CategoriaModel.init(
   },
   {
     sequelize,
-    tableName: "categorias",
+    tableName: "publico",
     timestamps: false,
     underscored: true,
     indexes: [
@@ -38,14 +39,14 @@ CategoriaModel.init(
   }
 );
 
-// CategoriaModel.belongsToMany(SalaModel, {
-//   as: "salas",
-//   through: SalasCategoriasModel,
-//   foreignKey: "categoria_id",
+// PublicoModel.belongsToMany(SalaModel, {
+//   as: "sala_id_salas_salas_publicos",
+//   through: SalasPublicoModel,
+//   foreignKey: "publico_id",
 //   otherKey: "sala_id",
 // });
 
-CategoriaModel.hasMany(SalasCategoriasModel, {
-  as: "salas_categorias",
-  foreignKey: "categoria_id",
+PublicoModel.hasMany(SalasPublicoModel, {
+  as: "salas_publicos",
+  foreignKey: "publico_id",
 });

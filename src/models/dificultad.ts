@@ -1,12 +1,11 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
-import { Categoria } from "../interfaces/categoria.interface";
+import { Dificultad } from "../interfaces/dificultad.interface";
 import { SalaModel } from "./sala";
-import { SalasCategoriasModel } from "./salas_categorias";
 
-export class CategoriaModel extends Model<Categoria> {}
+export class DificultadModel extends Model<Dificultad> {}
 
-CategoriaModel.init(
+DificultadModel.init(
   {
     id: {
       type: DataTypes.STRING(50),
@@ -24,7 +23,7 @@ CategoriaModel.init(
   },
   {
     sequelize,
-    tableName: "categorias",
+    tableName: "dificultades",
     timestamps: false,
     underscored: true,
     indexes: [
@@ -38,14 +37,7 @@ CategoriaModel.init(
   }
 );
 
-// CategoriaModel.belongsToMany(SalaModel, {
-//   as: "salas",
-//   through: SalasCategoriasModel,
-//   foreignKey: "categoria_id",
-//   otherKey: "sala_id",
-// });
-
-CategoriaModel.hasMany(SalasCategoriasModel, {
-  as: "salas_categorias",
-  foreignKey: "categoria_id",
+DificultadModel.hasMany(SalaModel, {
+  as: "salas",
+  foreignKey: "dificultad_id",
 });

@@ -1,12 +1,12 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
-import { Categoria } from "../interfaces/categoria.interface";
+import { Tematica } from "../interfaces/tematica.interface";
 import { SalaModel } from "./sala";
-import { SalasCategoriasModel } from "./salas_categorias";
+import { SalasTematicasModel } from "./salas_tematicas";
 
-export class CategoriaModel extends Model<Categoria> {}
+export class TematicaModel extends Model<Tematica> {}
 
-CategoriaModel.init(
+TematicaModel.init(
   {
     id: {
       type: DataTypes.STRING(50),
@@ -24,7 +24,7 @@ CategoriaModel.init(
   },
   {
     sequelize,
-    tableName: "categorias",
+    tableName: "tematicas",
     timestamps: false,
     underscored: true,
     indexes: [
@@ -38,14 +38,14 @@ CategoriaModel.init(
   }
 );
 
-// CategoriaModel.belongsToMany(SalaModel, {
-//   as: "salas",
-//   through: SalasCategoriasModel,
-//   foreignKey: "categoria_id",
+// TematicaModel.belongsToMany(SalaModel, {
+//   as: "sala_id_salas_salas_tematicas",
+//   through: SalasTematicasModel,
+//   foreignKey: "tematica_id",
 //   otherKey: "sala_id",
 // });
 
-CategoriaModel.hasMany(SalasCategoriasModel, {
-  as: "salas_categorias",
-  foreignKey: "categoria_id",
+TematicaModel.hasMany(SalasTematicasModel, {
+  as: "salas_tematicas",
+  foreignKey: "tematica_id",
 });

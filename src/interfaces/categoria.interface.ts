@@ -1,5 +1,8 @@
+import { Sala, SalasCategorias } from "./salas_categorias.interface";
+
 export interface Categoria {
-  id: string,
-  tipo: string,
-  numero_salas: number
+  id?: string | null;
+  tipo?: string | null;
+  numeroSalas?: number;
+  salasCategorias?: SalasCategorias[] | null;
 }

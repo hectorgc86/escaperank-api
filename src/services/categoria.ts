@@ -1,8 +1,8 @@
-import { Categoria } from '../interfaces/categoria.interface';
+import { Categoria } from "../interfaces/categoria.interface";
 import { CategoriaModel } from "../models/categoria";
 
 const obtenerCategoria = async (id: string) => {
-  const record = await CategoriaModel.findOne({ where: { id }});
+  const record = await CategoriaModel.findOne({ where: { id } });
   return record;
 };
 
@@ -16,7 +16,10 @@ const insertarCategoria = async (categoria: Categoria) => {
   return record;
 };
 
-const actualizarCategoria = async (categoriaModel: CategoriaModel, categoria: Categoria) => {
+const actualizarCategoria = async (
+  categoriaModel: CategoriaModel,
+  categoria: Categoria
+) => {
   const record = await categoriaModel.update({ ...categoria });
   return record;
 };
@@ -26,4 +29,10 @@ const borrarCategoria = async (categoriaModel: CategoriaModel) => {
   return record;
 };
 
-export { obtenerCategoria, obtenerCategorias, insertarCategoria, actualizarCategoria, borrarCategoria };
+export {
+  obtenerCategoria,
+  obtenerCategorias,
+  insertarCategoria,
+  actualizarCategoria,
+  borrarCategoria,
+};
