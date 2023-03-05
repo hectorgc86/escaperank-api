@@ -23,6 +23,3 @@ export interface PerfilRequest {
   nacido?: string | null;
   usuarioId?: number;
 }
-
-
-

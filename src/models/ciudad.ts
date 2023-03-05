@@ -59,12 +59,12 @@ CiudadModel.init(
   }
 );
 
+CompanyiaModel.belongsTo(CiudadModel, {
+  as: "ciudad",
+  foreignKey: "ciudad_id",
+});
+
 CiudadModel.hasMany(CompanyiaModel, {
   as: "companyias",
   foreignKey: "ciudad_id",
 });
-
-// CiudadModel.belongsTo(ProvinciaModel, {
-//   as: "ciudades",
-//   foreignKey: "provincia_id",
-// });

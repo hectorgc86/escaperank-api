@@ -74,8 +74,3 @@ PerfilModel.init(
     ],
   }
 );
-
-// PerfilModel.belongsTo(UsuarioModel, {
-//   as: "usuario",
-//   foreignKey: "usuario_id",
-// });

@@ -45,13 +45,15 @@ EquipoModel.init(
   }
 );
 
-// EquipoModel.belongsToMany(SalaModel, {
-//   as: "sala_id_salas",
+// SalaModel.belongsToMany(EquipoModel, {
+//   as: "equipo_id_equipos",
 //   through: PartidaModel,
-//   foreignKey: "equipo_id",
-//   otherKey: "sala_id",
+//   foreignKey: "sala_id",
+//   otherKey: "equipo_id",
 // });
 
-EquipoModel.hasMany(NoticiaModel, { as: "noticia", foreignKey: "equipo_id" });
+NoticiaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
+EquipoModel.hasMany(NoticiaModel, { as: "noticias", foreignKey: "equipo_id" });
 
+PartidaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
 EquipoModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "equipo_id" });

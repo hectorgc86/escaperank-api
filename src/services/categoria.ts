@@ -2,12 +2,15 @@ import { Categoria } from "../interfaces/categoria.interface";
 import { CategoriaModel } from "../models/categoria";
 
 const obtenerCategoria = async (id: string) => {
-  const record = await CategoriaModel.findOne({ where: { id } });
+  const record = await CategoriaModel.findOne({
+    where: { id },
+    include: "salas_categorias",
+  });
   return record;
 };
 
 const obtenerCategorias = async () => {
-  const records = await CategoriaModel.findAll();
+  const records = await CategoriaModel.findAll({ include: "salas_categorias" });
   return records;
 };
 

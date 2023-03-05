@@ -1,6 +1,5 @@
 import { Ciudad } from "../interfaces/ciudad.interface";
 import { CiudadModel } from "../models/ciudad";
-import { CompanyiaModel } from "../models/companyia";
 
 const obtenerCiudad = async (id: string) => {
   const record = await CiudadModel.findOne({
@@ -26,7 +25,7 @@ const actualizarCiudad = async (ciudadModel: CiudadModel, ciudad: Ciudad) => {
 };
 
 const borrarCiudad = async (ciudadModel: CiudadModel) => {
-  const record = await CiudadModel.destroy();
+  const record = await ciudadModel.destroy();
   return record;
 };
 

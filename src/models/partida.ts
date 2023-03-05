@@ -74,7 +74,3 @@ PartidaModel.init(
     ],
   }
 );
-
-// PartidaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
-
-// PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });

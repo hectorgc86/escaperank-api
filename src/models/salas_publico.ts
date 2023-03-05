@@ -53,9 +53,4 @@ SalasPublicoModel.init(
   }
 );
 
-// SalasPublicoModel.belongsTo(PublicoModel, {
-//   as: "publico",
-//   foreignKey: "publico_id",
-// });
-
 // SalasPublicoModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });

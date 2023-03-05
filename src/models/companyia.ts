@@ -108,14 +108,17 @@ CompanyiaModel.init(
   }
 );
 
-// CompanyiaModel.belongsTo(CiudadModel, {
-//   as: "ciudades",
-//   foreignKey: "ciudad_id",
-// });
-
+NoticiaModel.belongsTo(CompanyiaModel, {
+  as: "companyia",
+  foreignKey: "companyia_id",
+});
 CompanyiaModel.hasMany(NoticiaModel, {
   as: "noticias",
   foreignKey: "companyia_id",
 });
 
+SalaModel.belongsTo(CompanyiaModel, {
+  as: "companyia",
+  foreignKey: "companyia_id",
+});
 CompanyiaModel.hasMany(SalaModel, { as: "salas", foreignKey: "companyia_id" });

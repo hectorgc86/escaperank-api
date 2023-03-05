@@ -49,5 +49,3 @@ ValoracionModel.init(
     ],
   }
 );
-
-// ValoracionModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });

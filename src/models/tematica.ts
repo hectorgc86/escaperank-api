@@ -38,13 +38,6 @@ TematicaModel.init(
   }
 );
 
-// TematicaModel.belongsToMany(SalaModel, {
-//   as: "sala_id_salas_salas_tematicas",
-//   through: SalasTematicasModel,
-//   foreignKey: "tematica_id",
-//   otherKey: "sala_id",
-// });
-
 TematicaModel.hasMany(SalasTematicasModel, {
   as: "salas_tematicas",
   foreignKey: "tematica_id",

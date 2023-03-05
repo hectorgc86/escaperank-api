@@ -109,15 +109,3 @@ NoticiaModel.init(
     ],
   }
 );
-
-// NoticiaModel.belongsTo(CompanyiaModel, {
-//   as: "companyium",
-//   foreignKey: "companyia_id",
-// });
-
-// NoticiaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
-
-// NoticiaModel.belongsTo(UsuarioModel, {
-//   as: "usuario",
-//   foreignKey: "usuario_id",
-// });

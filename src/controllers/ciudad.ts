@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import {
   obtenerCiudades,
-  insertarCiudad,
   obtenerCiudad,
+  insertarCiudad,
   actualizarCiudad,
   borrarCiudad,
 } from "../services/ciudad";

@@ -52,13 +52,3 @@ SalasCategoriasModel.init(
     ],
   }
 );
-
-// SalasCategoriasModel.belongsTo(CategoriaModel, {
-//   as: "categorium",
-//   foreignKey: "categoria_id",
-// });
-
-// SalasCategoriasModel.belongsTo(SalaModel, {
-//   as: "sala",
-//   foreignKey: "sala_id",
-// });

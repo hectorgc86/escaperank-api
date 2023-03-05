@@ -39,13 +39,10 @@ PublicoModel.init(
   }
 );
 
-// PublicoModel.belongsToMany(SalaModel, {
-//   as: "sala_id_salas_salas_publicos",
-//   through: SalasPublicoModel,
-//   foreignKey: "publico_id",
-//   otherKey: "sala_id",
-// });
-
+SalasPublicoModel.belongsTo(PublicoModel, {
+  as: "publico",
+  foreignKey: "publico_id",
+});
 PublicoModel.hasMany(SalasPublicoModel, {
   as: "salas_publicos",
   foreignKey: "publico_id",

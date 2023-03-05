@@ -199,60 +199,47 @@ SalaModel.init(
 );
 
 // SalaModel.belongsToMany(CategoriaModel, {
-//   as: "categoria_id_categoria",
+//   as: "salas_categorias",
 //   through: SalasCategoriasModel,
 //   foreignKey: "sala_id",
 //   otherKey: "categoria_id",
 // });
 
-// SalaModel.belongsToMany(EquipoModel, {
-//   as: "equipo_id_equipos",
-//   through: PartidaModel,
-//   foreignKey: "sala_id",
-//   otherKey: "equipo_id",
-// });
+SalaModel.belongsToMany(EquipoModel, {
+  as: "equipo_id_equipos",
+  through: PartidaModel,
+  foreignKey: "sala_id",
+  otherKey: "equipo_id",
+});
 
-// SalaModel.belongsToMany(PublicoModel, {
-//   as: "publico_id_publicos",
-//   through: SalasPublicoModel,
-//   foreignKey: "sala_id",
-//   otherKey: "publico_id",
-// });
+SalaModel.belongsToMany(PublicoModel, {
+  as: "publico_id_publicos",
+  through: SalasPublicoModel,
+  foreignKey: "sala_id",
+  otherKey: "publico_id",
+});
 
-// SalaModel.belongsToMany(TematicaModel, {
-//   as: "tematica_id_tematicas",
-//   through: SalasTematicasModel,
-//   foreignKey: "sala_id",
-//   otherKey: "tematica_id",
-// });
+SalaModel.belongsToMany(TematicaModel, {
+  as: "tematica_id_tematicas",
+  through: SalasTematicasModel,
+  foreignKey: "sala_id",
+  otherKey: "tematica_id",
+});
 
-// SalaModel.belongsTo(CompanyiaModel, {
-//   as: "companyium",
-//   foreignKey: "companyia_id",
-// });
-
-// SalaModel.belongsTo(DificultadModel, {
-//   as: "dificultad",
-//   foreignKey: "dificultad_id",
-// });
-
+PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });
 SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "sala_id" });
 
-SalaModel.hasMany(SalasCategoriasModel, {
-  as: "salas_categoria",
-  foreignKey: "sala_id",
-});
+// SalaModel.hasMany(SalasPublicoModel, {
+//   as: "salas_publicos",
+//   foreignKey: "sala_id",
+// });
 
-SalaModel.hasMany(SalasPublicoModel, {
-  as: "salas_publicos",
-  foreignKey: "sala_id",
-});
+// SalaModel.hasMany(SalasTematicasModel, {
+//   as: "salas_tematicas",
+//   foreignKey: "sala_id",
+// });
 
-SalaModel.hasMany(SalasTematicasModel, {
-  as: "salas_tematicas",
-  foreignKey: "sala_id",
-});
-
+ValoracionModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });
 SalaModel.hasMany(ValoracionModel, {
   as: "valoraciones",
   foreignKey: "sala_id",

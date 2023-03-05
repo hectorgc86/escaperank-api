@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { obtenerCategorias, insertarCategoria, obtenerCategoria, actualizarCategoria, borrarCategoria } from "../services/categoria";
+import {
+  obtenerCategoria,
+  obtenerCategorias,
+  insertarCategoria,
+  actualizarCategoria,
+  borrarCategoria,
+} from "../services/categoria";
 
 const getCategoria = async (req: Request, res: Response) => {
   try {
@@ -30,7 +36,7 @@ const postCategoria = async (req: Request, res: Response) => {
   }
 };
 
-const putCategoria = async ({params, body}: Request, res: Response) => {
+const putCategoria = async ({ params, body }: Request, res: Response) => {
   try {
     const { id } = params;
     const result = await obtenerCategoria(id);
@@ -58,4 +64,10 @@ const deleteCategoria = async ({ params }: Request, res: Response) => {
   }
 };
 
-export { getCategoria, getCategorias, postCategoria, putCategoria, deleteCategoria }
+export {
+  getCategoria,
+  getCategorias,
+  postCategoria,
+  putCategoria,
+  deleteCategoria,
+};

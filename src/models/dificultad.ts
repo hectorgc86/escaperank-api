@@ -37,6 +37,10 @@ DificultadModel.init(
   }
 );
 
+SalaModel.belongsTo(DificultadModel, {
+  as: "dificultad",
+  foreignKey: "dificultad_id",
+});
 DificultadModel.hasMany(SalaModel, {
   as: "salas",
   foreignKey: "dificultad_id",
