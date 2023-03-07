@@ -6,14 +6,14 @@ import {
   putEquipo,
   deleteEquipo,
 } from "../controllers/equipo";
-import { logMiddleware } from "../middleware/log";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", logMiddleware, getEquipos);
-router.get("/:id", getEquipo);
-router.put("/:id", putEquipo);
-router.post("/", postEquipo);
-router.delete("/:id", deleteEquipo);
+router.get("/", checkSession, getEquipos);
+router.get("/:id", checkSession, getEquipo);
+router.put("/:id", checkSession, putEquipo);
+router.post("/", checkSession, postEquipo);
+router.delete("/:id", checkSession, deleteEquipo);
 
 export { router };

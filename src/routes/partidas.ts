@@ -6,14 +6,14 @@ import {
   putPartida,
   deletePartida,
 } from "../controllers/partida";
-import { logMiddleware } from "../middleware/log";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", logMiddleware, getPartidas);
-router.get("/:id", getPartida);
-router.put("/:id", putPartida);
-router.post("/", postPartida);
-router.delete("/:id", deletePartida);
+router.get("/", checkSession, getPartidas);
+router.get("/:id", checkSession, getPartida);
+router.put("/:id", checkSession, putPartida);
+router.post("/", checkSession, postPartida);
+router.delete("/:id", checkSession, deletePartida);
 
 export { router };

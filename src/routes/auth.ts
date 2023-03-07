@@ -1,9 +1,10 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { postLogin, postRegistro } from "../controllers/auth";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.post('/register', postLogin);
-router.post('/login', postRegistro); 
+router.post("/login", postLogin);
+router.post("/register", checkSession, postRegistro);
 
 export { router };

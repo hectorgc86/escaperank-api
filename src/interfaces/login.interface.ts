@@ -1,3 +1,6 @@
+import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
+
 export interface Login {
   usuarioId?: string | null;
   tipoToken?: string | null;
@@ -5,8 +8,8 @@ export interface Login {
   tokenAcceso?: string | null;
 }
 
-export interface LoginRequest {
-  usuario?: string | null;
+export interface LoginRequest extends Request {
+  usuario?: string | null | JwtPayload;
   contrasenya?: string | null;
   token?: string | null;
 }

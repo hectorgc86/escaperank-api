@@ -6,14 +6,14 @@ import {
   putCiudad,
   deleteCiudad,
 } from "../controllers/ciudad";
-import { logMiddleware } from "../middleware/log";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", logMiddleware, getCiudades);
-router.get("/:id", getCiudad);
-router.put("/:id", putCiudad);
-router.post("/", postCiudad);
-router.delete("/:id", deleteCiudad);
+router.get("/", checkSession, getCiudades);
+router.get("/:id", checkSession, getCiudad);
+router.put("/:id", checkSession, putCiudad);
+router.post("/", checkSession, postCiudad);
+router.delete("/:id", checkSession, deleteCiudad);
 
 export { router };

@@ -6,14 +6,14 @@ import {
   putNoticia,
   deleteNoticia,
 } from "../controllers/noticia";
-import { logMiddleware } from "../middleware/log";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", logMiddleware, getNoticias);
-router.get("/:id", getNoticia);
-router.put("/:id", putNoticia);
-router.post("/", postNoticia);
-router.delete("/:id", deleteNoticia);
+router.get("/", checkSession, getNoticias);
+router.get("/:id", checkSession, getNoticia);
+router.put("/:id", checkSession, putNoticia);
+router.post("/", checkSession, postNoticia);
+router.delete("/:id", checkSession, deleteNoticia);
 
 export { router };

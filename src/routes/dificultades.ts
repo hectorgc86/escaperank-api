@@ -6,14 +6,14 @@ import {
   putDificultad,
   deleteDificultad,
 } from "../controllers/dificultad";
-import { logMiddleware } from "../middleware/log";
+import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", logMiddleware, getDificultades);
-router.get("/:id", getDificultad);
-router.put("/:id", putDificultad);
-router.post("/", postDificultad);
-router.delete("/:id", deleteDificultad);
+router.get("/", checkSession, getDificultades);
+router.get("/:id", checkSession, getDificultad);
+router.put("/:id", checkSession, putDificultad);
+router.post("/", checkSession, postDificultad);
+router.delete("/:id", checkSession, deleteDificultad);
 
 export { router };
