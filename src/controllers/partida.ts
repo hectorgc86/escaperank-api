@@ -6,6 +6,7 @@ import {
   insertarPartida,
   actualizarPartida,
   borrarPartida,
+  obtenerPartidasEquipo,
 } from "../services/partida";
 
 const getPartida = async (req: Request, res: Response) => {
@@ -24,6 +25,17 @@ const getPartidas = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo partidas", e);
+  }
+};
+
+const getPartidasEquipo = async (req: Request, res: Response) => {
+  try {
+    const { idEquipo } = req.params;
+
+    const result = await obtenerPartidasEquipo(idEquipo);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo partidas equipo", e);
   }
 };
 
@@ -64,4 +76,11 @@ const deletePartida = async ({ params }: Request, res: Response) => {
   }
 };
 
-export { getPartida, getPartidas, postPartida, putPartida, deletePartida };
+export {
+  getPartida,
+  getPartidas,
+  getPartidasEquipo,
+  postPartida,
+  putPartida,
+  deletePartida,
+};

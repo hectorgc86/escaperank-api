@@ -5,12 +5,14 @@ import {
   postPartida,
   putPartida,
   deletePartida,
+  getPartidasEquipo,
 } from "../controllers/partida";
 import { checkSession } from "../middleware/session";
 
 const router = Router();
 
 router.get("/", checkSession, getPartidas);
+router.get("/equipo/:idEquipo", checkSession, getPartidasEquipo);
 router.get("/:id", checkSession, getPartida);
 router.put("/:id", checkSession, putPartida);
 router.post("/", checkSession, postPartida);

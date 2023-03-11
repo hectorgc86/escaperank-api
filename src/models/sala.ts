@@ -177,24 +177,6 @@ SalaModel.init(
     tableName: "salas",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-      {
-        name: "fk_salas_companyias",
-        using: "BTREE",
-        fields: [{ name: "companyia_id" }],
-      },
-      {
-        name: "fk_salas_dificultades",
-        using: "BTREE",
-        fields: [{ name: "dificultad_id" }],
-      },
-    ],
   }
 );
 
@@ -208,26 +190,26 @@ SalaModel.init(
 SalaModel.belongsToMany(EquipoModel, {
   as: "equipo_id_equipos",
   through: PartidaModel,
-  foreignKey: "sala_id",
-  otherKey: "equipo_id",
+  foreignKey: "salaId",
+  otherKey: "equipoId",
 });
 
 SalaModel.belongsToMany(PublicoModel, {
   as: "publico_id_publicos",
   through: SalasPublicoModel,
-  foreignKey: "sala_id",
-  otherKey: "publico_id",
+  foreignKey: "salaId",
+  otherKey: "publicoId",
 });
 
 SalaModel.belongsToMany(TematicaModel, {
   as: "tematica_id_tematicas",
   through: SalasTematicasModel,
-  foreignKey: "sala_id",
-  otherKey: "tematica_id",
+  foreignKey: "salaId",
+  otherKey: "tematicaId",
 });
 
-PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });
-SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "sala_id" });
+PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
+SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "salaId" });
 
 // SalaModel.hasMany(SalasPublicoModel, {
 //   as: "salas_publicos",
@@ -239,8 +221,8 @@ SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "sala_id" });
 //   foreignKey: "sala_id",
 // });
 
-ValoracionModel.belongsTo(SalaModel, { as: "sala", foreignKey: "sala_id" });
+ValoracionModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
 SalaModel.hasMany(ValoracionModel, {
   as: "valoraciones",
-  foreignKey: "sala_id",
+  foreignKey: "salaId",
 });

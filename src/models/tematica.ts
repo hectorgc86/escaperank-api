@@ -27,18 +27,10 @@ TematicaModel.init(
     tableName: "tematicas",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
 TematicaModel.hasMany(SalasTematicasModel, {
   as: "salas_tematicas",
-  foreignKey: "tematica_id",
+  foreignKey: "tematicaId",
 });

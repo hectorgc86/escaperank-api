@@ -34,14 +34,6 @@ EquipoModel.init(
     tableName: "equipos",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
@@ -52,8 +44,8 @@ EquipoModel.init(
 //   otherKey: "equipo_id",
 // });
 
-NoticiaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
-EquipoModel.hasMany(NoticiaModel, { as: "noticias", foreignKey: "equipo_id" });
+NoticiaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipoId" });
+EquipoModel.hasMany(NoticiaModel, { as: "noticias", foreignKey: "equipoId" });
 
-PartidaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipo_id" });
-EquipoModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "equipo_id" });
+PartidaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipoId" });
+EquipoModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "equipoId" });

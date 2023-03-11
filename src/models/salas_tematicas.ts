@@ -32,24 +32,6 @@ SalasTematicasModel.init(
     tableName: "salas_tematicas",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "sala_id" }, { name: "tematica_id" }],
-      },
-      {
-        name: "fk_salastematicas_tematicas",
-        using: "BTREE",
-        fields: [{ name: "tematica_id" }],
-      },
-      {
-        name: "fk_salastematicas_salas",
-        using: "BTREE",
-        fields: [{ name: "sala_id" }],
-      },
-    ],
   }
 );
 

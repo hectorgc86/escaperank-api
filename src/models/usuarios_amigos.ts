@@ -36,24 +36,6 @@ UsuariosAmigosModel.init(
     tableName: "usuarios_amigos",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "usuario_id" }, { name: "amigo_id" }],
-      },
-      {
-        name: "fk_usuariosamigos_amigos",
-        using: "BTREE",
-        fields: [{ name: "amigo_id" }],
-      },
-      {
-        name: "fk_usuariosamigos_usuarios",
-        using: "BTREE",
-        fields: [{ name: "usuario_id" }],
-      },
-    ],
   }
 );
 

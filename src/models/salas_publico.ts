@@ -32,24 +32,6 @@ SalasPublicoModel.init(
     tableName: "salas_publico",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "sala_id" }, { name: "publico_id" }],
-      },
-      {
-        name: "fk_salaspublico_publico",
-        using: "BTREE",
-        fields: [{ name: "publico_id" }],
-      },
-      {
-        name: "fk_salaspublico_salas",
-        using: "BTREE",
-        fields: [{ name: "sala_id" }],
-      },
-    ],
   }
 );
 

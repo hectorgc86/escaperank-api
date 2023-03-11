@@ -14,6 +14,14 @@ const obtenerPartidas = async () => {
   return records;
 };
 
+const obtenerPartidasEquipo = async (idEquipo: string) => {
+  const records = await PartidaModel.findAll({
+    where: { equipoId: idEquipo },
+    include: ["sala"],
+  });
+  return records;
+};
+
 const insertarPartida = async (partida: Partida) => {
   const record = await PartidaModel.create({ ...partida });
   return record;
@@ -35,6 +43,7 @@ const borrarPartida = async (partidaModel: PartidaModel) => {
 export {
   obtenerPartida,
   obtenerPartidas,
+  obtenerPartidasEquipo,
   insertarPartida,
   actualizarPartida,
   borrarPartida,

@@ -84,28 +84,5 @@ NoticiaModel.init(
     tableName: "noticias",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-      {
-        name: "fk_noticias_companyias",
-        using: "BTREE",
-        fields: [{ name: "companyia_id" }],
-      },
-      {
-        name: "fk_noticias_usuarios",
-        using: "BTREE",
-        fields: [{ name: "usuario_id" }],
-      },
-      {
-        name: "fk_news_equipos1",
-        using: "BTREE",
-        fields: [{ name: "equipo_id" }],
-      },
-    ],
   }
 );

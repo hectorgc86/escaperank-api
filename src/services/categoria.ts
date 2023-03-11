@@ -1,41 +1,14 @@
-import { Categoria } from "../interfaces/categoria.interface";
+import { QueryTypes } from "sequelize";
 import { CategoriaModel } from "../models/categoria";
 
-const obtenerCategoria = async (id: string) => {
-  const record = await CategoriaModel.findOne({
-    where: { id },
-    include: "salas_categorias",
-  });
-  return record;
-};
-
 const obtenerCategorias = async () => {
-  const records = await CategoriaModel.findAll({ include: "salas_categorias" });
+  const records = await CategoriaModel.sequelize?.query(
+    "SELECT c.id, c.tipo, count(s.id) as numeroSalas FROM categorias c inner join salas_categorias sc on sc.categoria_id = c.id inner join salas s on s.id = sc.sala_id group by c.id, c.tipo order by numeroSalas desc",
+    {
+      type: QueryTypes.SELECT,
+    }
+  );
   return records;
 };
 
-const insertarCategoria = async (categoria: Categoria) => {
-  const record = await CategoriaModel.create({ ...categoria });
-  return record;
-};
-
-const actualizarCategoria = async (
-  categoriaModel: CategoriaModel,
-  categoria: Categoria
-) => {
-  const record = await categoriaModel.update({ ...categoria });
-  return record;
-};
-
-const borrarCategoria = async (categoriaModel: CategoriaModel) => {
-  const record = await categoriaModel.destroy();
-  return record;
-};
-
-export {
-  obtenerCategoria,
-  obtenerCategorias,
-  insertarCategoria,
-  actualizarCategoria,
-  borrarCategoria,
-};
+export { obtenerCategorias };

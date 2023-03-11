@@ -32,23 +32,5 @@ SalasCategoriasModel.init(
     tableName: "salas_categorias",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "sala_id" }, { name: "categoria_id" }],
-      },
-      {
-        name: "fk_salascategorias_salas",
-        using: "BTREE",
-        fields: [{ name: "sala_id" }],
-      },
-      {
-        name: "fk_salascategorias_categorias",
-        using: "BTREE",
-        fields: [{ name: "categoria_id" }],
-      },
-    ],
   }
 );

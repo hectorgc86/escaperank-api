@@ -30,22 +30,14 @@ ProvinciaModel.init(
     tableName: "provincias",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
 CiudadModel.belongsTo(ProvinciaModel, {
   as: "ciudades",
-  foreignKey: "provincia_id",
+  foreignKey: "provinciaId",
 });
 ProvinciaModel.hasMany(CiudadModel, {
   as: "ciudades",
-  foreignKey: "provincia_id",
+  foreignKey: "provinciaId",
 });

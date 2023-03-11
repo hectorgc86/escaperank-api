@@ -59,18 +59,5 @@ PerfilModel.init(
     tableName: "perfiles",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }, { name: "usuario_id" }],
-      },
-      {
-        name: "fk_perfiles_usuarios",
-        using: "BTREE",
-        fields: [{ name: "usuario_id" }],
-      },
-    ],
   }
 );

@@ -34,18 +34,5 @@ ValoracionModel.init(
     tableName: "valoraciones",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-      {
-        name: "fk_valoraciones_salas",
-        using: "BTREE",
-        fields: [{ name: "sala_id" }],
-      },
-    ],
   }
 );

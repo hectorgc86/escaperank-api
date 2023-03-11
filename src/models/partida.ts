@@ -54,23 +54,5 @@ PartidaModel.init(
     tableName: "partidas",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }, { name: "sala_id" }, { name: "equipo_id" }],
-      },
-      {
-        name: "fk_partidas_salas",
-        using: "BTREE",
-        fields: [{ name: "sala_id" }],
-      },
-      {
-        name: "fk_partidas_equipos",
-        using: "BTREE",
-        fields: [{ name: "equipo_id" }],
-      },
-    ],
   }
 );

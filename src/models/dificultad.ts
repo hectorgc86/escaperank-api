@@ -26,22 +26,14 @@ DificultadModel.init(
     tableName: "dificultades",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
 SalaModel.belongsTo(DificultadModel, {
   as: "dificultad",
-  foreignKey: "dificultad_id",
+  foreignKey: "dificultadId",
 });
 DificultadModel.hasMany(SalaModel, {
   as: "salas",
-  foreignKey: "dificultad_id",
+  foreignKey: "dificultadId",
 });

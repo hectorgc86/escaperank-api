@@ -87,25 +87,26 @@ UsuarioModel.init(
 
 NoticiaModel.belongsTo(UsuarioModel, {
   as: "usuario",
-  foreignKey: "usuario_id",
+  foreignKey: "usuarioId",
 });
 UsuarioModel.hasMany(NoticiaModel, {
   as: "noticias",
-  foreignKey: "usuario_id",
+  foreignKey: "usuarioId",
 });
 
-UsuarioModel.hasOne(PerfilModel, { as: "perfil", foreignKey: "usuario_id" });
+UsuarioModel.hasOne(PerfilModel, { as: "perfil", foreignKey: "usuarioId" });
+
 PerfilModel.belongsTo(UsuarioModel, {
   as: "usuario",
-  foreignKey: "usuario_id",
+  foreignKey: "usuarioId",
 });
 
 UsuarioModel.hasMany(UsuariosAmigosModel, {
   as: "usuarios_amigos",
-  foreignKey: "usuario_id",
+  foreignKey: "usuarioId",
 });
 
 UsuarioModel.hasMany(UsuariosAmigosModel, {
   as: "amigo_usuarios_amigos",
-  foreignKey: "amigo_id",
+  foreignKey: "amigoId",
 });

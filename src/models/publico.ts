@@ -28,22 +28,14 @@ PublicoModel.init(
     tableName: "publico",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
 SalasPublicoModel.belongsTo(PublicoModel, {
   as: "publico",
-  foreignKey: "publico_id",
+  foreignKey: "publicoId",
 });
 PublicoModel.hasMany(SalasPublicoModel, {
   as: "salas_publicos",
-  foreignKey: "publico_id",
+  foreignKey: "publicoId",
 });

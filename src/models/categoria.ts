@@ -27,20 +27,12 @@ CategoriaModel.init(
     tableName: "categorias",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-    ],
   }
 );
 
 CategoriaModel.belongsToMany(SalaModel, {
   as: "salas_categorias",
   through: SalasCategoriasModel,
-  foreignKey: "categoria_id",
-  otherKey: "sala_id",
+  foreignKey: "categoriaId",
+  otherKey: "salaId",
 });

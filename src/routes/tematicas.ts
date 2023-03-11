@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getCategorias } from "../controllers/categoria";
+import { getTematicas } from "../controllers/tematica";
 import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", checkSession, getCategorias);
+router.get("/", checkSession, getTematicas);
 
 export { router };

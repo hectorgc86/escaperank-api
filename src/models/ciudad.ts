@@ -43,28 +43,15 @@ CiudadModel.init(
     tableName: "ciudades",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [{ name: "id" }],
-      },
-      {
-        name: "fk_ciudades_provincias",
-        using: "BTREE",
-        fields: [{ name: "provincia_id" }],
-      },
-    ],
   }
 );
 
 CompanyiaModel.belongsTo(CiudadModel, {
   as: "ciudad",
-  foreignKey: "ciudad_id",
+  foreignKey: "ciudadId",
 });
 
 CiudadModel.hasMany(CompanyiaModel, {
   as: "companyias",
-  foreignKey: "ciudad_id",
+  foreignKey: "ciudadId",
 });

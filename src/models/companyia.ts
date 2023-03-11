@@ -110,15 +110,15 @@ CompanyiaModel.init(
 
 NoticiaModel.belongsTo(CompanyiaModel, {
   as: "companyia",
-  foreignKey: "companyia_id",
+  foreignKey: "companyiaId",
 });
 CompanyiaModel.hasMany(NoticiaModel, {
   as: "noticias",
-  foreignKey: "companyia_id",
+  foreignKey: "companyiaId",
 });
 
 SalaModel.belongsTo(CompanyiaModel, {
   as: "companyia",
-  foreignKey: "companyia_id",
+  foreignKey: "companyiaId",
 });
-CompanyiaModel.hasMany(SalaModel, { as: "salas", foreignKey: "companyia_id" });
+CompanyiaModel.hasMany(SalaModel, { as: "salas", foreignKey: "companyiaId" });

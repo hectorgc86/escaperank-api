@@ -10,7 +10,9 @@ const obtenerPerfil = async (id: string) => {
 };
 
 const obtenerPerfiles = async () => {
-  const records = await PerfilModel.findAll({ include: "usuario" });
+  const records = await PerfilModel.findAll({
+    include: "usuario",
+  });
   return records;
 };
 
