@@ -6,6 +6,7 @@ import {
   insertarEquipo,
   actualizarEquipo,
   borrarEquipo,
+  obtenerEquiposUsuario,
 } from "../services/equipo";
 
 const getEquipo = async (req: Request, res: Response) => {
@@ -24,6 +25,16 @@ const getEquipos = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo equipos", e);
+  }
+};
+
+const getEquiposUsuario = async (req: Request, res: Response) => {
+  try {
+    const { idUsuario } = req.params;
+    const result = await obtenerEquiposUsuario(idUsuario);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo equipos de un usuario", e);
   }
 };
 
@@ -64,4 +75,11 @@ const deleteEquipo = async ({ params }: Request, res: Response) => {
   }
 };
 
-export { getEquipo, getEquipos, postEquipo, putEquipo, deleteEquipo };
+export {
+  getEquipo,
+  getEquipos,
+  getEquiposUsuario,
+  postEquipo,
+  putEquipo,
+  deleteEquipo,
+};

@@ -6,6 +6,7 @@ import {
   insertarNoticia,
   actualizarNoticia,
   borrarNoticia,
+  obtenerNoticiasUsuario,
 } from "../services/noticia";
 
 const getNoticia = async (req: Request, res: Response) => {
@@ -24,6 +25,16 @@ const getNoticias = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo noticias", e);
+  }
+};
+
+const getNoticiasUsuario = async (req: Request, res: Response) => {
+  try {
+    const { idUsuario } = req.params;
+    const result = await obtenerNoticiasUsuario(idUsuario);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo noticias del usuario", e);
   }
 };
 
@@ -64,4 +75,11 @@ const deleteNoticia = async ({ params }: Request, res: Response) => {
   }
 };
 
-export { getNoticia, getNoticias, postNoticia, putNoticia, deleteNoticia };
+export {
+  getNoticia,
+  getNoticias,
+  getNoticiasUsuario,
+  postNoticia,
+  putNoticia,
+  deleteNoticia,
+};
