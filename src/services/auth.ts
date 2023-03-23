@@ -7,8 +7,6 @@ import { Sequelize } from "sequelize";
 import { generarToken } from "../utils/jwt.handle";
 
 const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
-  let isCorrect: boolean;
-
   const usuarioExistente = await UsuarioModel.findOne({
     where: Sequelize.or(
       { email: loginRequest.usuario, contrasenya: loginRequest.contrasenya },
@@ -21,7 +19,7 @@ const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
   });
 
   if (!usuarioExistente) {
-    return "No se encuentra el usuario";
+    throw "No se encuentra el usuario";
   } else {
     return generarToken(loginRequest.usuario as string);
   }
