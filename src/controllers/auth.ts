@@ -26,4 +26,8 @@ const postRegistro = async ({ body }: Request, res: Response) => {
   }
 };
 
-export { postLogin, postRegistro };
+const getValidacion = async (req: Request, res: Response) => {
+  res.send({ ok: true });
+};
+
+export { postLogin, postRegistro, getValidacion };
