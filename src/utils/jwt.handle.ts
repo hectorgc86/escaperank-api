@@ -1,4 +1,6 @@
 import { sign, verify } from "jsonwebtoken";
+import { Login } from "../interfaces/login.interface";
+import { Usuario } from "../interfaces/usuario.interface";
 
 const JWT_SECRET = process.env.JWT_SECRET || "token.01010101";
 
@@ -7,7 +9,12 @@ const generarToken = (id: string) => {
     expiresIn: "1h",
   });
 
-  return jwt;
+  const response = {
+    usuarioId: id,
+    accessToken: jwt,
+  };
+
+  return response;
 };
 
 const verificarToken = (jwt: string) => {

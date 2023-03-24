@@ -8,10 +8,7 @@ const postLogin = async ({ body }: LoginRequest, res: Response) => {
     const nocript = body.nocript ? true : false;
 
     const result = await login(body, nocript);
-    res.send({
-      usuarioId: body.usuario,
-      accessToken: result,
-    });
+    res.send(result);
   } catch (e) {
     handleHttp(res, "Error en login", e);
   }

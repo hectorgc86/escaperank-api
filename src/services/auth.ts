@@ -1,13 +1,13 @@
 import { LoginRequest, Login } from "../interfaces/login.interface";
 import { Perfil } from "../interfaces/perfil.interface";
-import { UsuarioRequest } from "../interfaces/usuario.interface";
+import { Usuario, UsuarioRequest } from "../interfaces/usuario.interface";
 import { UsuarioModel } from "../models/usuario";
 import { encrypt, verify } from "../utils/password.handle";
 import { Sequelize } from "sequelize";
 import { generarToken } from "../utils/jwt.handle";
 
 const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
-  const usuarioExistente = await UsuarioModel.findOne({
+  const usuarioExistente = (await UsuarioModel.findOne({
     where: Sequelize.or(
       { email: loginRequest.usuario, contrasenya: loginRequest.contrasenya },
       Sequelize.and({
@@ -16,12 +16,12 @@ const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
       })
     ),
     include: "perfil",
-  });
+  })) as Usuario;
 
   if (!usuarioExistente) {
     throw "No se encuentra el usuario";
   } else {
-    return generarToken(loginRequest.usuario as string);
+    return generarToken(usuarioExistente.id as unknown as string);
   }
 
   //   if (nocript) {
