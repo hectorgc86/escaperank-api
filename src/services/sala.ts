@@ -1,14 +1,19 @@
-import { QueryTypes } from "sequelize";
 import { SalaModel } from "../models/sala";
+import { CompanyiaModel } from "../models/companyia";
+import { CiudadModel } from "../models/ciudad";
 
-const obtenerSalas = async () => {
-  const records = await SalaModel.sequelize?.query(
-    "SELECT c.id, c.tipo, count(s.id) as numeroSalas FROM salas c inner join salas_salas sc on sc.sala_id = c.id inner join salas s on s.id = sc.sala_id group by c.id, c.tipo order by numeroSalas desc",
-    {
-      type: QueryTypes.SELECT,
-    }
-  );
+const obtenerSalasPromocionadas = async () => {
+  const records = await SalaModel.findAll({
+    include: [
+      {
+        model: CompanyiaModel,
+        as: "companyia",
+        include: [{ model: CiudadModel, as: "ciudad" }],
+      },
+    ],
+    limit: 10,
+  });
   return records;
 };
 
-export { obtenerSalas };
+export { obtenerSalasPromocionadas };

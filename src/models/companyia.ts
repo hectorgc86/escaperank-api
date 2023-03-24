@@ -116,7 +116,6 @@ CompanyiaModel.hasMany(NoticiaModel, {
   as: "noticias",
   foreignKey: "companyiaId",
 });
-
 SalaModel.belongsTo(CompanyiaModel, {
   as: "companyia",
   foreignKey: "companyiaId",

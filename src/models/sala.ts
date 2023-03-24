@@ -1,8 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Sala } from "../interfaces/sala.interface";
-import { CategoriaModel } from "./categoria";
-import { SalasCategoriasModel } from "./salas_categorias";
 import { EquipoModel } from "./equipo";
 import { PartidaModel } from "./partida";
 import { PublicoModel } from "./publico";
@@ -10,7 +8,6 @@ import { SalasPublicoModel } from "./salas_publico";
 import { TematicaModel } from "./tematica";
 import { SalasTematicasModel } from "./salas_tematicas";
 import { CompanyiaModel } from "./companyia";
-import { DificultadModel } from "./dificultad";
 import { ValoracionModel } from "./valoracion";
 
 export class SalaModel extends Model<Sala> {}

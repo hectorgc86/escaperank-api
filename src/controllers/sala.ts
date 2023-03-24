@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { obtenerSalas } from "../services/sala";
+import { obtenerSalasPromocionadas } from "../services/sala";
 
-const getSalas = async (req: Request, res: Response) => {
+const getSalasPromocionadas = async (req: Request, res: Response) => {
   try {
-    const result = await obtenerSalas();
+    const result = await obtenerSalasPromocionadas();
     res.send(result);
   } catch (e) {
-    handleHttp(res, "Error obteniendo salas", e);
+    handleHttp(res, "Error obteniendo salas promocionadas", e);
   }
 };
 
-export { getSalas };
+export { getSalasPromocionadas };

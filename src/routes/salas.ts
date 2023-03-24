@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { getSalas } from "../controllers/sala";
-import { checkSession } from "../middleware/session";
+import { getSalasPromocionadas } from "../controllers/sala";
 
 const router = Router();
 
-router.get("/", checkSession, getSalas);
+router.get("/promocionadas", getSalasPromocionadas);
 
 export { router };
