@@ -1,7 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Companyia } from "../interfaces/companyia.interface";
-import { CiudadModel } from "./ciudad";
 import { NoticiaModel } from "./noticia";
 import { SalaModel } from "./sala";
 

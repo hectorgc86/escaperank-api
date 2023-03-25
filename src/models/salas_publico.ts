@@ -1,8 +1,6 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { SalasPublico } from "../interfaces/salas_publico.interface";
-import { PublicoModel } from "./publico";
-import { SalaModel } from "./sala";
 
 export class SalasPublicoModel extends Model<SalasPublico> {}
 

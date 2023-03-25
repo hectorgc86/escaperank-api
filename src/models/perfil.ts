@@ -1,7 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Perfil } from "../interfaces/perfil.interface";
-import { UsuarioModel } from "./usuario";
 
 export class PerfilModel extends Model<Perfil> {}
 

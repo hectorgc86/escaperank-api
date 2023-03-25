@@ -23,6 +23,8 @@ const obtenerNoticiasUsuario = async (idUsuario: string) => {
     {
       replacements: { idUsuario: idUsuario },
       type: QueryTypes.SELECT,
+      model: NoticiaModel,
+      mapToModel: true,
     }
   );
   return records;

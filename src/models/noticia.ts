@@ -2,9 +2,6 @@ import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Noticia } from "../interfaces/noticia.interface";
-import { CompanyiaModel } from "./companyia";
-import { EquipoModel } from "./equipo";
-import { UsuarioModel } from "./usuario";
 
 export class NoticiaModel extends Model<Noticia> {}
 

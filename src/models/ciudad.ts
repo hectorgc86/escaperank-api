@@ -2,7 +2,6 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Ciudad } from "../interfaces/ciudad.interface";
 import { CompanyiaModel } from "./companyia";
-import { ProvinciaModel } from "./provincia";
 
 export class CiudadModel extends Model<Ciudad> {}
 
