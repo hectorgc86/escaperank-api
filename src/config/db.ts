@@ -11,7 +11,6 @@ const sequelize = new Sequelize(database, username, password,
     host,
     dialect: driver
   });
-
 const dbConnectMySql = async () => {
   try {
     await sequelize.authenticate();
