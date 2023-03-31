@@ -1,5 +1,4 @@
 {
-
   "name": "escaperank-api",
   "version": "1.0.0",
   "description": "",
@@ -7,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/app.ts",
     "build": "tsc",
-    "start": "node ./dist/app.js",
+    "start": "nodemon ./src/app.ts",
     "deploy": "git add . && git commit -m Heroku && git push heroku prueba-heroku:master"
   },
   "keywords": [],
@@ -41,9 +40,5 @@
   },
   "engines": {
     "node": "18.x"
-  },
-  "nodemonConfig": {
-    "ext": "ts",
-    "exec": "npm run build && npm start"
   }
 }
