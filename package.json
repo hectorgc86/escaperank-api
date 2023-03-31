@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/app.ts",
     "build": "tsc",
-    "start": "nodemon ./src/app.ts",
+    "start": "node ./src/app.ts",
     "deploy": "git add . && git commit -m Heroku && git push heroku prueba-heroku:master"
   },
   "keywords": [],
