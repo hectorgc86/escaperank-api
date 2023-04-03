@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/app.ts",
     "build": "tsc",
     "start": "node ./dist/app.js",
-    "deploy": "git add . && git commit -m 'Despliegue en Heroku' && git push heroku prueba-heroku:master"
+    "deploy": "git add . && git commit -m 'Despliegue en Heroku' && git push origin master"
   },
   "keywords": [],
   "author": "",
