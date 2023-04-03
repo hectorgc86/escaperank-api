@@ -16,4 +16,4 @@ app.use(BASE_PATH, router);
 
 dbConnectMySql();
 
-app.listen(PORT, () => console.log(`Servicio iniciado en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servicio iniciado en ${PORT}`));
