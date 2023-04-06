@@ -2,27 +2,6 @@ import { QueryTypes } from "sequelize";
 import { Estadisticas } from "../interfaces/estadisticas.interface";
 import { PartidaModel } from "../models/partida";
 
-
-
-interface Ranking {
-  sala: string;
-  id: string;
-  companyia_id: string;
-  tiempos: {
-    equipo: string;
-    fecha: string;
-    tiempo: string;
-  }[];
-}
-interface OldRanking {
-  sala: string;
-  id: string;
-  companyia_id: string;
-  equipo: string;
-  fecha: string;
-  tiempo: string;
-}
-
 const obtenerEstadisticasCompanyia = async (idCompanyia: string) => {
   const response: Estadisticas = {
     numPartidas:await obtenerNumPartidasCompanyia(idCompanyia),
