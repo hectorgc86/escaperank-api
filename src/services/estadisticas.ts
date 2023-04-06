@@ -8,7 +8,9 @@ const obtenerEstadisticasCompanyia = async (idCompanyia: string) => {
   const response: Estadisticas = {
     numPartidas:await obtenerNumPartidasCompanyia(idCompanyia),
     tiempos:await obtenerTiemposCompanyia(idCompanyia),
-    rankings:await obtenerRankingCompanyia(idCompanyia)
+    rankings:await obtenerRankingCompanyia(idCompanyia),
+    partidasMes:await obtenerNumPartidasMesCompanyia(idCompanyia),
+
   };
   return response;
 };
@@ -16,12 +18,36 @@ const obtenerEstadisticasCompanyia = async (idCompanyia: string) => {
 const obtenerEstadisticasSala = async (idSala: string) => {
   const response: Estadisticas = {
     numPartidas:await obtenerNumPartidasSala(idSala),
+    partidasMes:await obtenerNumPartidasMesSala(idSala),
     tiempos:await obtenerTiemposSala(idSala),
     rankings:await obtenerRankingSala(idSala)
   };
   return response;
 };
 
+const obtenerNumPartidasMesCompanyia = async (idCompanyia: string) => {
+  const records = await PartidaModel.sequelize?.query(
+    "SELECT s.nombre AS nombre_sala, YEAR(p.fecha) AS anio, MONTH(p.fecha) AS mes, COUNT(*) AS cantidad_partidas FROM  partidas p JOIN salas s ON p.sala_id = s.id WHERE  s.companyia_id = :idCompanyia GROUP BY s.nombre, anio, mes ORDER BY anio ASC, mes ASC",
+    {
+      replacements: { idCompanyia: idCompanyia },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  return records;
+};
+
+const obtenerNumPartidasMesSala = async (idSala: string) => {
+  const records = await PartidaModel.sequelize?.query(
+    "SELECT s.nombre AS nombre_sala, YEAR(p.fecha) AS anio, MONTH(p.fecha) AS mes, COUNT(*) AS cantidad_partidas FROM  partidas p JOIN salas s ON p.sala_id = s.id WHERE  s.id = :idSala GROUP BY s.nombre, anio, mes ORDER BY anio ASC, mes ASC",
+    {
+      replacements: { idSala: idSala },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  return records;
+};
 
 
 const obtenerNumPartidasCompanyia = async (idCompanyia: string) => {

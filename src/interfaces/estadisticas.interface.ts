@@ -2,6 +2,7 @@ export interface Estadisticas {
   numPartidas?: object | null;
   tiempos?: object | null;
   rankings?: object | null;
+  partidasMes?:object| null;
 }
 export interface Ranking {
   sala: string;
