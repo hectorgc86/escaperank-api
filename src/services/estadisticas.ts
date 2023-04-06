@@ -1,6 +1,8 @@
 import { QueryTypes } from "sequelize";
 import { Estadisticas } from "../interfaces/estadisticas.interface";
 import { PartidaModel } from "../models/partida";
+import {Ranking} from "../interfaces/estadisticas.interface";
+import {OldRanking} from "../interfaces/estadisticas.interface";
 
 const obtenerEstadisticasCompanyia = async (idCompanyia: string) => {
   const response: Estadisticas = {

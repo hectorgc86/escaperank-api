@@ -3,7 +3,7 @@ export interface Estadisticas {
   tiempos?: object | null;
   rankings?: object | null;
 }
-interface Ranking {
+export interface Ranking {
   sala: string;
   id: string;
   companyia_id: string;
@@ -13,7 +13,7 @@ interface Ranking {
     tiempo: string;
   }[];
 }
-interface OldRanking {
+export interface OldRanking {
   sala: string;
   id: string;
   companyia_id: string;
