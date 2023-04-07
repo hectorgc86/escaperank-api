@@ -1,13 +1,14 @@
 {
   "name": "escaperank-api",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/app.ts",
     "build": "tsc",
     "start": "node ./dist/app.js",
-    "deploy": "git push heroku master"
+    "heroku": "git push origin master",
+    "deploy": "git add . && git commit -m 'Despliegue en Heroku' && git push origin master"
   },
   "keywords": [],
   "author": "",
