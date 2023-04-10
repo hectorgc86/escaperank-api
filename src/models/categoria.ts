@@ -38,9 +38,11 @@ CategoriaModel.init(
   }
 );
 
-CategoriaModel.belongsToMany(SalaModel, {
-  as: "salas_categorias",
-  through: SalasCategoriasModel,
+SalasCategoriasModel.belongsTo(CategoriaModel, {
+  as: "categoria",
   foreignKey: "categoriaId",
-  otherKey: "salaId",
+});
+CategoriaModel.hasMany(SalasCategoriasModel, {
+  as: "salas_categorias",
+  foreignKey: "categoriaId",
 });

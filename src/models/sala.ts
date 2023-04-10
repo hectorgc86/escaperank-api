@@ -7,8 +7,10 @@ import { PublicoModel } from "./publico";
 import { SalasPublicoModel } from "./salas_publico";
 import { TematicaModel } from "./tematica";
 import { SalasTematicasModel } from "./salas_tematicas";
-import { CompanyiaModel } from "./companyia";
 import { ValoracionModel } from "./valoracion";
+import { SalasCategoriasModel } from "./salas_categorias";
+import { CategoriaModel } from "./categoria";
+import { DificultadModel } from "./dificultad";
 
 export class SalaModel extends Model<Sala> {}
 
@@ -177,29 +179,29 @@ SalaModel.init(
   }
 );
 
-// SalaModel.belongsToMany(CategoriaModel, {
-//   as: "salas_categorias",
-//   through: SalasCategoriasModel,
-//   foreignKey: "sala_id",
-//   otherKey: "categoria_id",
-// });
+SalaModel.belongsToMany(CategoriaModel, {
+  as: "categorias",
+  through: SalasCategoriasModel,
+  foreignKey: "salaId",
+  otherKey: "categoriaId",
+});
 
 SalaModel.belongsToMany(EquipoModel, {
-  as: "equipo_id_equipos",
+  as: "equipos",
   through: PartidaModel,
   foreignKey: "salaId",
   otherKey: "equipoId",
 });
 
 SalaModel.belongsToMany(PublicoModel, {
-  as: "publico_id_publicos",
+  as: "publico",
   through: SalasPublicoModel,
   foreignKey: "salaId",
   otherKey: "publicoId",
 });
 
 SalaModel.belongsToMany(TematicaModel, {
-  as: "tematica_id_tematicas",
+  as: "tematicas",
   through: SalasTematicasModel,
   foreignKey: "salaId",
   otherKey: "tematicaId",
@@ -207,16 +209,6 @@ SalaModel.belongsToMany(TematicaModel, {
 
 PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
 SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "salaId" });
-
-// SalaModel.hasMany(SalasPublicoModel, {
-//   as: "salas_publicos",
-//   foreignKey: "sala_id",
-// });
-
-// SalaModel.hasMany(SalasTematicasModel, {
-//   as: "salas_tematicas",
-//   foreignKey: "sala_id",
-// });
 
 ValoracionModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
 SalaModel.hasMany(ValoracionModel, {
