@@ -27,7 +27,7 @@ const obtenerEstadisticasSala = async (idSala: string) => {
 
 const obtenerNumPartidasMesCompanyia = async (idCompanyia: string) => {
   const records = await PartidaModel.sequelize?.query(
-    "SELECT s.nombre AS nombre_sala, YEAR(p.fecha) AS anio, MONTH(p.fecha) AS mes, COUNT(*) AS cantidad_partidas FROM  partidas p JOIN salas s ON p.sala_id = s.id WHERE  s.companyia_id = :idCompanyia GROUP BY s.nombre, anio, mes ORDER BY anio ASC, mes ASC",
+    "SELECT DISTINCT s.nombre AS nombre_sala, YEAR(p.fecha) AS anio, MONTH(p.fecha) AS mes, COUNT(*) AS cantidad_partidas FROM  partidas p JOIN salas s ON p.sala_id = s.id WHERE  s.companyia_id = :idCompanyia GROUP BY s.nombre, anio, mes ORDER BY anio ASC, mes ASC",
     {
       replacements: { idCompanyia: idCompanyia },
       type: QueryTypes.SELECT
@@ -64,7 +64,7 @@ const obtenerNumPartidasCompanyia = async (idCompanyia: string) => {
 
 const obtenerTiemposCompanyia =async (idCompanyia:string) => {
   const records = await PartidaModel.sequelize?.query(
-    "SELECT s.nombre, TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS partida_mas_larga, TIME_FORMAT(SEC_TO_TIME(p2.min_tiempo), '%i:%s') AS partida_mas_corta, TIME_FORMAT(SEC_TO_TIME(CEILING(p2.avg_tiempo)), '%i:%s') AS tiempo_promedio FROM partidas p, salas s, (SELECT sala_id, MIN(minutos * 60 + segundos) AS min_tiempo, AVG(minutos * 60 + segundos) AS avg_tiempo FROM partidas GROUP BY sala_id) p2 WHERE p.sala_id = p2.sala_id AND s.id = p.sala_id AND s.companyia_id = :idCompanyia AND (p.minutos * 60 + p.segundos) IN (SELECT MAX(minutos * 60 + segundos) FROM partidas WHERE sala_id = p.sala_id)",
+    "SELECT DISTINCT s.nombre, TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS partida_mas_larga, TIME_FORMAT(SEC_TO_TIME(p2.min_tiempo), '%i:%s') AS partida_mas_corta, TIME_FORMAT(SEC_TO_TIME(CEILING(p2.avg_tiempo)), '%i:%s') AS tiempo_promedio FROM partidas p, salas s, (SELECT sala_id, MIN(minutos * 60 + segundos) AS min_tiempo, AVG(minutos * 60 + segundos) AS avg_tiempo FROM partidas GROUP BY sala_id) p2 WHERE p.sala_id = p2.sala_id AND s.id = p.sala_id AND s.companyia_id = :idCompanyia AND (p.minutos * 60 + p.segundos) IN (SELECT MAX(minutos * 60 + segundos) FROM partidas WHERE sala_id = p.sala_id)",
     {
       replacements: { idCompanyia: idCompanyia },
       type: QueryTypes.SELECT
@@ -74,7 +74,7 @@ const obtenerTiemposCompanyia =async (idCompanyia:string) => {
 
 const obtenerRankingCompanyia = async (idCompanyia:string)=>{
   const records = await PartidaModel.sequelize?.query(
-    "SELECT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha,TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND e.id = p.equipo_id  AND s.companyia_id = :idCompanyia ORDER BY tiempo ASC",
+    "SELECT DISTINCT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha,TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND e.id = p.equipo_id  AND s.companyia_id = :idCompanyia ORDER BY tiempo ASC",
     {
       replacements: { idCompanyia: idCompanyia },
       type: QueryTypes.SELECT
@@ -89,7 +89,7 @@ const obtenerRankingCompanyia = async (idCompanyia:string)=>{
 
 const obtenerNumPartidasSala = async (idSala: string) => {
   const records = await PartidaModel.sequelize?.query(
-    "SELECT salas.nombre,salas.companyia_id, partidas.sala_id,count(partidas.sala_id) as numPartidas FROM partidas, salas WHERE partidas.sala_id=salas.id group by salas.nombre,partidas.sala_id,salas.companyia_id HAVING partidas.sala_id=:idSala",
+    "SELECT DISTINCT salas.nombre,salas.companyia_id, partidas.sala_id,count(partidas.sala_id) as numPartidas FROM partidas, salas WHERE partidas.sala_id=salas.id group by salas.nombre,partidas.sala_id,salas.companyia_id HAVING partidas.sala_id=:idSala",
     {
       replacements: { idSala: idSala },
       type: QueryTypes.SELECT
@@ -100,7 +100,7 @@ const obtenerNumPartidasSala = async (idSala: string) => {
 };
 const obtenerTiemposSala =async (idSala:string) => {
   const records = await PartidaModel.sequelize?.query(
-"SELECT s.nombre, TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS partida_mas_larga, TIME_FORMAT(SEC_TO_TIME(p2.min_tiempo), '%i:%s') AS partida_mas_corta, TIME_FORMAT(SEC_TO_TIME(CEILING(p2.avg_tiempo)), '%i:%s') AS tiempo_promedio FROM partidas p, salas s, (SELECT sala_id, MIN(minutos * 60 + segundos) AS min_tiempo, AVG(minutos * 60 + segundos) AS avg_tiempo FROM partidas GROUP BY sala_id) p2 WHERE p.sala_id = p2.sala_id AND s.id = p.sala_id AND p.sala_id =:idSala AND (p.minutos * 60 + p.segundos) IN (SELECT MAX(minutos * 60 + segundos) FROM partidas WHERE sala_id = p.sala_id)",
+"SELECT DISTINCT s.nombre, TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS partida_mas_larga, TIME_FORMAT(SEC_TO_TIME(p2.min_tiempo), '%i:%s') AS partida_mas_corta, TIME_FORMAT(SEC_TO_TIME(CEILING(p2.avg_tiempo)), '%i:%s') AS tiempo_promedio FROM partidas p, salas s, (SELECT sala_id, MIN(minutos * 60 + segundos) AS min_tiempo, AVG(minutos * 60 + segundos) AS avg_tiempo FROM partidas GROUP BY sala_id) p2 WHERE p.sala_id = p2.sala_id AND s.id = p.sala_id AND p.sala_id =:idSala AND (p.minutos * 60 + p.segundos) IN (SELECT MAX(minutos * 60 + segundos) FROM partidas WHERE sala_id = p.sala_id)",
     {
       replacements: { idSala: idSala },
       type: QueryTypes.SELECT
@@ -110,7 +110,7 @@ const obtenerTiemposSala =async (idSala:string) => {
 
 const obtenerRankingSala = async (idSala:string)=>{
   const records = await PartidaModel.sequelize?.query(
-    "SELECT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha,  TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND p.equipo_id = e.id  AND s.id = :idSala ORDER BY tiempo ASC",
+    "SELECT DISTINCT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha,  TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND p.equipo_id = e.id  AND s.id = :idSala ORDER BY tiempo ASC",
     {
       replacements: { idSala: idSala },
       type: QueryTypes.SELECT
