@@ -18,6 +18,14 @@ PublicoModel.init(
       type: DataTypes.STRING(45),
       allowNull: true,
     },
+    icono: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    colorIcono: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
     numeroSalas: {
       type: DataTypes.INTEGER,
       allowNull: true,
