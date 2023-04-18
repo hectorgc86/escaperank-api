@@ -7,7 +7,6 @@ import {
   actualizarPerfil,
   borrarPerfil,
 } from "../services/perfil";
-import { Perfil } from "../interfaces/perfil.interface";
 
 const getPerfil = async (req: Request, res: Response) => {
   try {

@@ -16,10 +16,11 @@ const getSalas = async (req: Request, res: Response) => {
   try {
     const grupo = req.query.grupo as unknown as string;
     const tipo = req.query.tipo as unknown as string;
+    const busqueda = req.query.busqueda as unknown as string;
     const offset = parseInt(req.query.offset as unknown as string);
     const limit = parseInt(req.query.limit as unknown as string);
 
-    const result = await obtenerSalas(grupo, tipo, offset, limit);
+    const result = await obtenerSalas(grupo, tipo, busqueda, offset, limit);
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo salas", e);

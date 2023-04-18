@@ -5,6 +5,7 @@ import { CategoriaModel } from "../models/categoria";
 import { TematicaModel } from "../models/tematica";
 import { PublicoModel } from "../models/publico";
 import { DificultadModel } from "../models/dificultad";
+import { Op, Sequelize } from "sequelize";
 
 const obtenerSala = async (id: string) => {
   const record = await SalaModel.findOne({
@@ -27,6 +28,7 @@ const obtenerSala = async (id: string) => {
 const obtenerSalas = async (
   grupo: string,
   tipo: string,
+  busqueda: string,
   offset: number,
   limit: number
 ) => {
@@ -34,44 +36,58 @@ const obtenerSalas = async (
     return obtenerSalasPromocionadas();
   }
 
-  let include = [];
-
-  include.push({
-    model: CompanyiaModel,
-    as: "companyia",
-    include: [{ model: CiudadModel, as: "ciudad" }],
-  });
-
-  if (grupo === "Categoría") {
-    include.push({
-      model: CategoriaModel,
-      where: { tipo: tipo },
-      as: "categorias",
-    });
-  } else if (grupo === "Temática") {
-    include.push({
-      model: TematicaModel,
-      where: { tipo: tipo },
-      as: "tematicas",
-    });
-  } else if (grupo === "Público") {
-    include.push({
-      model: PublicoModel,
-      where: { tipo: tipo },
-      as: "publico",
-    });
-  } else if (grupo === "Dificultad") {
-    include.push({
-      model: DificultadModel,
-      where: { tipo: tipo },
-      as: "dificultad",
-    });
-  }
-
   const records = await SalaModel.findAll({
-    include,
+    where: {
+      [Op.or]: [
+        {
+          nombre: { [Op.substring]: busqueda },
+        },
+        {
+          descripcion: { [Op.substring]: busqueda },
+        },
+        {
+          "$companyia.ciudad.nombre$": {
+            [Op.in]: Sequelize.literal(
+              `(SELECT nombre FROM ciudades WHERE nombre LIKE '%${busqueda}%')`
+            ),
+          },
+        },
+      ],
+    },
+    include: [
+      {
+        model: CompanyiaModel,
+        as: "companyia",
+        include: [{ model: CiudadModel, as: "ciudad" }],
+      },
+      {
+        model: CategoriaModel,
+        as: "categorias",
+        where: { tipo: tipo },
+        required: grupo === "Categoría",
+      },
+      {
+        model: TematicaModel,
+        as: "tematicas",
+        where: { tipo: tipo },
+        required: grupo === "Temática",
+      },
+      {
+        model: PublicoModel,
+        as: "publico",
+        where: { tipo: tipo },
+        required: grupo === "Público",
+      },
+      {
+        model: DificultadModel,
+        as: "dificultad",
+        where: { tipo: tipo },
+        required: grupo === "Dificultad",
+      },
+    ],
     offset,
     limit,
+    subQuery: false,
   });
 
   return records;
