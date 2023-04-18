@@ -43,7 +43,11 @@ const obtenerSalas = async (
           nombre: { [Op.substring]: busqueda },
         },
         {
-          descripcion: { [Op.substring]: busqueda },
+          "$companyia.nombre$": {
+            [Op.in]: Sequelize.literal(
+              `(SELECT nombre FROM companyias WHERE nombre LIKE '%${busqueda}%')`
+            ),
+          },
         },
         {
           "$companyia.ciudad.nombre$": {
