@@ -119,7 +119,7 @@ const obtenerRankingSala = async (idSala:string)=>{
 
   const rank = groupBySala(records as OldRanking[] )
   
-    return rank;
+    return rank[0];
 }
 
 function groupBySala(rankings: OldRanking[]): Ranking[] {
