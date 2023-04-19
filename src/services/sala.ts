@@ -112,4 +112,34 @@ const obtenerSalasPromocionadas = async () => {
   return records;
 };
 
-export { obtenerSala, obtenerSalas };
+
+const obtenerSalasPorCompanyia = async (companyiaId: string) => {
+  const records = await SalaModel.findAll({
+    where: { companyiaId: companyiaId },
+    include: [
+      {
+        model: CompanyiaModel,
+        as: "companyia",
+        include: [{ model: CiudadModel, as: "ciudad" }],
+      },
+      {
+        model: CategoriaModel,
+        as: "categorias",
+      },
+      {
+        model: TematicaModel,
+        as: "tematicas",
+      },
+      {
+        model: PublicoModel,
+        as: "publico",
+      },
+      {
+        model: DificultadModel,
+        as: "dificultad",
+      },
+    ],
+  });
+  return records;
+};
+export { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia};

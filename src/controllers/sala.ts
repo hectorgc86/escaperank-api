@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { obtenerSala, obtenerSalas } from "../services/sala";
+import { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia } from "../services/sala";
 import { obtenerRankingSala } from "../services/estadisticas";
 
 const getSala = async (req: Request, res: Response) => {
@@ -38,4 +38,15 @@ const getSalas = async (req: Request, res: Response) => {
   }
 };
 
-export { getSala, getRankingSala, getSalas };
+const getSalasCompanyia = async (req: Request, res: Response) => {
+  try {
+    const companyiaId = req.params.id as unknown as string;
+   console.log(companyiaId);
+    const result = await obtenerSalasPorCompanyia(companyiaId);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo salas", e);
+  }
+};
+
+export { getSala, getRankingSala, getSalas,getSalasCompanyia };
