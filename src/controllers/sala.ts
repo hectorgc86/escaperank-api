@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import { obtenerSala, obtenerSalas } from "../services/sala";
+import { obtenerRankingSala } from "../services/estadisticas";
 
 const getSala = async (req: Request, res: Response) => {
   try {
@@ -9,6 +10,16 @@ const getSala = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo sala", e);
+  }
+};
+
+const getRankingSala = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await obtenerRankingSala(id);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo ranking sala", e);
   }
 };
 
@@ -27,4 +38,4 @@ const getSalas = async (req: Request, res: Response) => {
   }
 };
 
-export { getSala, getSalas };
+export { getSala, getRankingSala, getSalas };
