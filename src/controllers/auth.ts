@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import { login, registro } from "../services/auth";
 import { LoginRequest } from "../interfaces/login.interface";
+import { RegistroRequest } from "../interfaces/registro.interface";
 
 const postLogin = async ({ body }: LoginRequest, res: Response) => {
   try {
@@ -14,7 +15,7 @@ const postLogin = async ({ body }: LoginRequest, res: Response) => {
   }
 };
 
-const postRegistro = async ({ body }: Request, res: Response) => {
+const postRegistro = async ({ body }: RegistroRequest, res: Response) => {
   try {
     const result = await registro(body);
     res.send(result);

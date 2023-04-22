@@ -25,6 +25,10 @@ UsuarioModel.init(
       allowNull: false,
       unique: "UKkfsp0s1tflm1cwlj8idhqsad0",
     },
+    contrasenya: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
     activado: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -50,10 +54,16 @@ UsuarioModel.init(
         fields: [{ name: "email" }],
       },
       {
-        name: "nick",
+        name: "contrasenya",
         unique: true,
         using: "BTREE",
-        fields: [{ name: "nick" }],
+        fields: [{ name: "email" }],
+      },
+      {
+        name: "nick",
+        unique: false,
+        using: "BTREE",
+        fields: [{ name: "contrasenya" }],
       },
       {
         name: "UKkfsp0s1tflm1cwlj8idhqsad0",

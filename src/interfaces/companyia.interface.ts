@@ -25,3 +25,17 @@ export interface Companyia {
   noticias?: Noticia[] | null;
   salas?: Sala[] | null;
 }
+
+export interface CompanyiaRequest {
+  nombre?: string | null;
+  direccion?: string | null;
+  email?: string | null;
+  telefono?: string | null;
+  web?: string | null;
+  latitud?: string | null;
+  longitud?: string | null;
+  numeroLocal?: string | null;
+  codigoPostal?: string | null;
+  ciudad?: string | null;
+  provincia?: string | null;
+}

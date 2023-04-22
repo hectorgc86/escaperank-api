@@ -5,7 +5,7 @@ import { checkSession } from "../middleware/session";
 const router = Router();
 
 router.post("/login", postLogin);
+router.post("/registro", postRegistro);
 router.get("/validar", checkSession, getValidacion);
-router.post("/register", checkSession, postRegistro);
 
 export { router };

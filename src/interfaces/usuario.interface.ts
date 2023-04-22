@@ -9,6 +9,7 @@ export interface Usuario extends Login {
   id?: number;
   nick?: string | null;
   email?: string | null;
+  contrasenya?: string | null;
   activado?: boolean;
   perfil?: Perfil;
   equiposUsuarios?: EquiposUsuarios[] | null;
@@ -20,9 +21,11 @@ export interface UsuarioRequest {
   nick?: string | null;
   contrasenya?: string | null;
   email?: string | null;
-  perfil?: PerfilRequest;
+  nombre?: string | null;
+  telefono?: string | null;
+  nacido?: string | null;
 }
 
-export interface Amigo extends Usuario{
+export interface Amigo extends Usuario {
   estado?: Estado;
 }
