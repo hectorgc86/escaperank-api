@@ -3,6 +3,7 @@ import { sequelize } from "../config/db";
 import { Companyia } from "../interfaces/companyia.interface";
 import { NoticiaModel } from "./noticia";
 import { SalaModel } from "./sala";
+import { UsuarioModel } from "./usuario";
 
 export class CompanyiaModel extends Model<Companyia> {}
 
@@ -77,6 +78,14 @@ CompanyiaModel.init(
       type: DataTypes.STRING(45),
       allowNull: true,
     },
+    usuarioId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "usuarios",
+        key: "id",
+      },
+    },
     ciudadId: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -103,6 +112,12 @@ CompanyiaModel.init(
         using: "BTREE",
         fields: [{ name: "ciudad_id" }],
       },
+      {
+        name: "uk_companyia_usuario",
+        unique: true,
+        using: "BTREE",
+        fields: [{ name: "usuario_id" }],
+      },
     ],
   }
 );
@@ -119,4 +134,5 @@ SalaModel.belongsTo(CompanyiaModel, {
   as: "companyia",
   foreignKey: "companyiaId",
 });
+
 CompanyiaModel.hasMany(SalaModel, { as: "salas", foreignKey: "companyiaId" });
