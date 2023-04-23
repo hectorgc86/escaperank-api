@@ -1,7 +1,7 @@
 import { Ciudad } from "./ciudad.interface";
 import { Noticia } from "./noticia.interface";
 import { Sala } from "./sala.interface";
-import { Usuario } from "../../../escaperank-admin/src/app/usuarios/interfaces/usuario.interface";
+import { Usuario } from "./usuario.interface";
 
 export interface Companyia {
   id?: string | null;
