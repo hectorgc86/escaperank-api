@@ -38,7 +38,4 @@ TematicaModel.init(
   }
 );
 
-TematicaModel.hasMany(SalasTematicasModel, {
-  as: "salas_tematicas",
-  foreignKey: "tematicaId",
-});
+

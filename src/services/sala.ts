@@ -5,7 +5,15 @@ import { CategoriaModel } from "../models/categoria";
 import { TematicaModel } from "../models/tematica";
 import { PublicoModel } from "../models/publico";
 import { DificultadModel } from "../models/dificultad";
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize, Transaction, TransactionOptions } from "sequelize";
+import { Sala } from "../interfaces/sala.interface";
+import { ValoracionModel } from "../models/valoracion";
+import * as crypto from "crypto";
+import { SalasCategoriasModel } from "../models/salas_categorias";
+import {sequelize} from "../config/db";
+import { SalasTematicasModel } from "../models/salas_tematicas";
+import { SalasPublicoModel } from "../models/salas_publico";
+import { imagekit } from "../config/imagekit";
 
 const obtenerSala = async (id: string) => {
   const record = await SalaModel.findOne({
@@ -112,7 +120,6 @@ const obtenerSalasPromocionadas = async () => {
   return records;
 };
 
-
 const obtenerSalasPorCompanyia = async (companyiaId: string) => {
   const records = await SalaModel.findAll({
     where: { companyiaId: companyiaId },
@@ -142,4 +149,120 @@ const obtenerSalasPorCompanyia = async (companyiaId: string) => {
   });
   return records;
 };
-export { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia};
+
+const guardarSala = async (sala: Sala) => {
+  try {
+    const genId = crypto.randomUUID();
+    const imgExtension = sala.imagenEstrecha?.split(";")[0].split("/")[1];
+    const result = await SalaModel.create(
+      {
+        id: genId,
+        descripcion: sala.descripcion,
+        minimoJugadores: sala.minimoJugadores,
+        maximoJugadores: sala.maximoJugadores,
+        nombre: sala.nombre,
+        promocionada: sala.promocionada,
+        duracion: sala.duracion,
+        precioMinimo: sala.precioMinimo,
+        precioMaximo: sala.precioMaximo,
+        urlReserva: sala.urlReserva,
+        edadPublico: sala.edadPublico,
+        proximamente: sala.proximamente,
+        visto: sala.visto,
+        modoCombate: sala.modoCombate,
+        textoCombate: sala.textoCombate,
+        salaIgual: sala.salaIgual,
+        enOferta: sala.enOferta,
+        textoOferta: sala.textoOferta,
+        numeroResenyas: sala.numeroResenyas,
+        regaloBonus: sala.regaloBonus,
+        disponibleIngles: sala.disponibleIngles,
+        adaptadoMinusvalidos: sala.adaptadoMinusvalidos,
+        adaptadoCiegos: sala.adaptadoCiegos,
+        adaptadoSordos: sala.adaptadoSordos,
+        adaptadoEmbarazadas: sala.adaptadoEmbarazadas,
+        noClaustrofobicos: sala.noClaustrofobicos,
+        imagenAncha: genId + "." + imgExtension,
+        imagenEstrecha: genId + "." + imgExtension,
+        jugadoresIncluidos: sala.jugadoresIncluidos,
+        precioJugadorAdicional: sala.precioJugadorAdicional,
+        validez: sala.validez,
+        comoReservar: sala.comoReservar,
+        terminosReserva: sala.terminosReserva,
+        otrosDatos: sala.otrosDatos,
+        companyiaId: sala.companyiaId,
+        dificultadId: sala.dificultadId,
+        categorias: sala.categorias,
+        publico: sala.publico,
+        tematicas: sala.tematicas,
+      }
+    );
+
+    if (sala.tematicas != null && sala.tematicas.length > 0) {
+      sala.tematicas.forEach(async (tematica) => {
+        if (tematica != null && tematica.id != null) {
+          const salaTematica = await SalasTematicasModel.create(
+            {
+              salaId: genId,
+              tematicaId: tematica.id,
+            }
+          );
+        }
+      });
+    }
+
+    if (sala.categorias != null && sala.categorias.length > 0) {
+      sala.categorias.forEach(async (categoria) => {
+        if (categoria != null && categoria.id != null) {
+          const salaCategoria = await SalasCategoriasModel.create(
+            {
+              salaId: genId,
+              categoriaId: categoria.id,
+            }
+          );
+        }
+      });
+    }
+
+    if (sala.publico != null && sala.publico.length > 0) {
+      sala.publico.forEach(async (publico) => {
+        if (publico != null && publico.id != null) {
+          const salaPublico = await SalasPublicoModel.create(
+            {
+              salaId: genId,
+              publicoId: publico.id,
+            }
+          );
+        }
+      });
+    }
+
+    if (sala.imagenEstrecha!=null){
+    await imagekit.upload({
+      folder:"/img/salas/estrechas/",
+      useUniqueFileName:false,
+      file :sala.imagenEstrecha, //required
+      fileName : genId + "." + imgExtension,   //required
+      extensions: [
+          {
+              name: "google-auto-tagging",
+              maxTags: 5,
+              minConfidence: 95
+          }
+      ]
+  }).then(response => {
+      console.log(response);
+  }).catch(error => {
+      console.log(error);
+  });
+}
+
+   // t.commit;
+    return result;
+  } catch (error) {
+    // Deshacer la transacción en caso de error
+    console.log("Error en la transacción, rollback realizado "+error);
+  }
+};
+
+export { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia, guardarSala };

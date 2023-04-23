@@ -1,8 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { SalasCategorias } from "../interfaces/salas_categorias.interface";
-import { CategoriaModel } from "./categoria";
-import { SalaModel } from "./sala";
+
 
 export class SalasCategoriasModel extends Model<SalasCategorias> {}
 
