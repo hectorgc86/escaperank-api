@@ -1,40 +1,78 @@
-import { QueryTypes } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Usuario } from "../interfaces/usuario.interface";
 import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
 import { UsuariosAmigosModel } from "../models/usuarios_amigos";
+import { PerfilModel } from "../models/perfil";
 
 const obtenerUsuario = async (id: string) => {
   const record = await UsuarioModel.findOne({
     where: { id },
     include: "perfil",
+    attributes: { exclude: ["contrasenya"] },
   });
+
   return record;
 };
 
 const obtenerUsuarios = async () => {
-  const records = await UsuarioModel.findAll({ include: "perfil" });
+  const records = await UsuarioModel.findAll({
+    include: "perfil",
+    attributes: { exclude: ["contrasenya"] },
+  });
   return records;
 };
 
+// const obtenerAmigosUsuario = async (id: string) => {
+//   const records = await UsuarioModel.sequelize?.query(
+//     "SELECT usuarios.* , usuarios_amigos.estado , perfiles.* " +
+//       "FROM usuarios, usuarios_amigos, perfiles " +
+//       "WHERE usuarios.id = usuarios_amigos.amigo_id " +
+//       "AND usuarios_amigos.amigo_id = perfiles.usuario_id " +
+//       "AND usuarios_amigos.usuario_id = :id " +
+//       "AND usuarios_amigos.estado = 'aceptado' " +
+//       "OR " +
+//       "usuarios.id = usuarios_amigos.usuario_id " +
+//       "AND usuarios_amigos.usuario_id = perfiles.usuario_id " +
+//       "AND usuarios_amigos.amigo_id = :id " +
+//       "AND(usuarios_amigos.estado = 'aceptado' OR usuarios_amigos.estado = 'pendiente')",
+//     {
+//       replacements: { id: id },
+//       type: QueryTypes.SELECT,
+//     }
+//   );
+//   return records;
+// };
+
 const obtenerAmigosUsuario = async (id: string) => {
-  const records = await UsuarioModel.sequelize?.query(
-    "SELECT usuarios.* , usuarios_amigos.estado , perfiles.* " +
-      "FROM usuarios, usuarios_amigos, perfiles " +
-      "WHERE usuarios.id = usuarios_amigos.amigo_id " +
-      "AND usuarios_amigos.amigo_id = perfiles.usuario_id " +
-      "AND usuarios_amigos.usuario_id = :id " +
-      "AND usuarios_amigos.estado = 'aceptado' " +
-      "OR " +
-      "usuarios.id = usuarios_amigos.usuario_id " +
-      "AND usuarios_amigos.usuario_id = perfiles.usuario_id " +
-      "AND usuarios_amigos.amigo_id = :id " +
-      "AND(usuarios_amigos.estado = 'aceptado' OR usuarios_amigos.estado = 'pendiente')",
-    {
-      replacements: { id: id },
-      type: QueryTypes.SELECT,
-    }
-  );
+  const records = await UsuarioModel.findAll({
+    where: {
+      [Op.or]: [
+        {
+          "$amigos->UsuariosAmigosModel.amigo_id$": id,
+          "$amigos->UsuariosAmigosModel.estado$": "aceptado",
+        },
+        {
+          "$amigos->UsuariosAmigosModel.usuario_id$": id,
+          "$amigos->UsuariosAmigosModel.estado$": {
+            [Op.or]: ["aceptado", "pendiente"],
+          },
+        },
+      ],
+    },
+    include: [
+      {
+        model: UsuarioModel,
+        as: "amigos",
+        attributes: [],
+      },
+      {
+        model: PerfilModel,
+        as: "perfil",
+      },
+    ],
+    attributes: { exclude: ["contrasenya"] },
+  });
   return records;
 };
 

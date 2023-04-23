@@ -1,6 +1,6 @@
-import { QueryTypes } from "sequelize";
 import { Equipo } from "../interfaces/equipo.interface";
 import { EquipoModel } from "../models/equipo";
+import { UsuarioModel } from "../models/usuario";
 
 const obtenerEquipo = async (id: string) => {
   const record = await EquipoModel.findOne({
@@ -18,18 +18,17 @@ const obtenerEquipos = async () => {
 };
 
 const obtenerEquiposUsuario = async (idUsuario: string) => {
-  const records = await EquipoModel.sequelize?.query(
-    "SELECT * FROM equipos " +
-      "WHERE id " +
-      "IN(SELECT equipo_id " +
-      "FROM equipos_usuarios " +
-      "WHERE usuario_id = :idUsuario) " +
-      "AND activado = 1",
-    {
-      replacements: { idUsuario: idUsuario },
-      type: QueryTypes.SELECT,
-    }
-  );
+  const records = await EquipoModel.findAll({
+    where: { activado: true },
+    include: [
+      {
+        model: UsuarioModel,
+        as: "usuarios",
+        where: { id: idUsuario },
+        attributes: [],
+      },
+    ],
+  });
   return records;
 };
 

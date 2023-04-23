@@ -12,6 +12,7 @@ import {
   obtenerUsuarios,
   obtenerUsuariosEquipo,
 } from "../services/usuario";
+import { obtenerEquiposUsuario } from "../services/equipo";
 
 const getUsuario = async (req: Request, res: Response) => {
   try {
@@ -49,6 +50,16 @@ const getUsuariosEquipo = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo usuarios de un equipo", e);
+  }
+};
+
+const getEquiposUsuario = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await obtenerEquiposUsuario(id);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo equipos de un usuario", e);
   }
 };
 
@@ -129,6 +140,7 @@ export {
   getUsuario,
   getUsuarios,
   getAmigosUsuario,
+  getEquiposUsuario,
   getUsuariosEquipo,
   postUsuario,
   postAmigo,
