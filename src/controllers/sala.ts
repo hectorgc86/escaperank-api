@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia } from "../services/sala";
+import { guardarSala, obtenerSala, obtenerSalas, obtenerSalasPorCompanyia } from "../services/sala";
 import { obtenerRankingSala } from "../services/estadisticas";
+import { Sala } from "../interfaces/salas_categorias.interface";
 
 const getSala = async (req: Request, res: Response) => {
   try {
@@ -49,4 +50,15 @@ const getSalasCompanyia = async (req: Request, res: Response) => {
   }
 };
 
-export { getSala, getRankingSala, getSalas,getSalasCompanyia };
+
+const postSala = async ({ body }: Request, res: Response) => {
+  try {
+    console.log(body);
+    const result = await guardarSala(body);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error guardando sala", e);
+  }
+};
+
+export { getSala, getRankingSala, getSalas, getSalasCompanyia, postSala };

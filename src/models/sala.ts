@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { BelongsToMany, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Sala } from "../interfaces/sala.interface";
 import { EquipoModel } from "./equipo";
@@ -8,11 +8,13 @@ import { SalasPublicoModel } from "./salas_publico";
 import { TematicaModel } from "./tematica";
 import { SalasTematicasModel } from "./salas_tematicas";
 import { ValoracionModel } from "./valoracion";
-import { SalasCategoriasModel } from "./salas_categorias";
 import { CategoriaModel } from "./categoria";
 import { DificultadModel } from "./dificultad";
+import { SalasCategoriasModel } from "./salas_categorias";
 
-export class SalaModel extends Model<Sala> {}
+export class SalaModel extends Model<Sala> {
+
+}
 
 SalaModel.init(
   {
@@ -170,6 +172,7 @@ SalaModel.init(
         key: "id",
       },
     },
+    
   },
   {
     sequelize,
@@ -179,12 +182,6 @@ SalaModel.init(
   }
 );
 
-SalaModel.belongsToMany(CategoriaModel, {
-  as: "categorias",
-  through: SalasCategoriasModel,
-  foreignKey: "salaId",
-  otherKey: "categoriaId",
-});
 
 SalaModel.belongsToMany(EquipoModel, {
   as: "equipos",
@@ -200,12 +197,23 @@ SalaModel.belongsToMany(PublicoModel, {
   otherKey: "publicoId",
 });
 
-SalaModel.belongsToMany(TematicaModel, {
-  as: "tematicas",
-  through: SalasTematicasModel,
-  foreignKey: "salaId",
-  otherKey: "tematicaId",
+
+SalaModel.belongsToMany(CategoriaModel, {
+  through: SalasCategoriasModel,
+  foreignKey: 'salaId',
+  otherKey: 'categoriaId',
+  as: 'categorias'
 });
+
+CategoriaModel.belongsToMany(SalaModel, {
+  through: SalasCategoriasModel,
+  otherKey: 'salaId',
+  foreignKey: 'categoriaId',
+  as: 'salas'
+});
+
+TematicaModel.belongsToMany(SalaModel, { through: 'salas_tematicas', as: 'salas', foreignKey: 'tematica_id' });
+SalaModel.belongsToMany(TematicaModel, { through: 'salas_tematicas', as: 'tematicas', foreignKey: 'sala_id' });
 
 PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
 SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "salaId" });

@@ -1,8 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import { Categoria } from "../interfaces/categoria.interface";
-import { SalaModel } from "./sala";
-import { SalasCategoriasModel } from "./salas_categorias";
 
 export class CategoriaModel extends Model<Categoria> {}
 
@@ -38,11 +36,3 @@ CategoriaModel.init(
   }
 );
 
-SalasCategoriasModel.belongsTo(CategoriaModel, {
-  as: "categoria",
-  foreignKey: "categoriaId",
-});
-CategoriaModel.hasMany(SalasCategoriasModel, {
-  as: "salas_categorias",
-  foreignKey: "categoriaId",
-});
