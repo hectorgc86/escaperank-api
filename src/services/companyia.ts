@@ -9,6 +9,13 @@ const obtenerCompanyia = async (id: string) => {
   return record;
 };
 
+const obtenerCompanyiaPorUsuario = async (idUsuario: number) => {
+  const record = await CompanyiaModel.findOne({
+    where: { usuarioId: idUsuario },
+  });
+  return record;
+};
+
 const obtenerCompanyias = async () => {
   const records = await CompanyiaModel.findAll({
     include: ["noticias", "salas", "ciudad"],
@@ -36,6 +43,7 @@ const borrarCompanyia = async (companyiaModel: CompanyiaModel) => {
 
 export {
   obtenerCompanyia,
+  obtenerCompanyiaPorUsuario,
   obtenerCompanyias,
   insertarCompanyia,
   actualizarCompanyia,

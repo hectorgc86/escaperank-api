@@ -7,6 +7,8 @@ import {
   actualizarPerfil,
   borrarPerfil,
 } from "../services/perfil";
+import { Perfil } from "../interfaces/perfil.interface";
+import { PerfilModel } from "../models/perfil";
 
 const getPerfil = async (req: Request, res: Response) => {
   try {
@@ -39,7 +41,7 @@ const postPerfil = async (req: Request, res: Response) => {
 const putPerfil = async ({ params, body }: Request, res: Response) => {
   try {
     const { id } = params;
-    const result = await obtenerPerfil(id);
+    const result = (await obtenerPerfil(id)) as PerfilModel;
     if (!result) {
       return res.send("No se encuentra perfil con ese id");
     }
@@ -53,7 +55,7 @@ const putPerfil = async ({ params, body }: Request, res: Response) => {
 const deletePerfil = async ({ params }: Request, res: Response) => {
   try {
     const { id } = params;
-    const result = await obtenerPerfil(id);
+    const result = (await obtenerPerfil(id)) as PerfilModel;
     if (!result) {
       return res.send("No se encuentra perfil con ese id");
     }

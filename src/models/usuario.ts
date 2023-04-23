@@ -4,6 +4,7 @@ import { Usuario } from "../interfaces/usuario.interface";
 import { NoticiaModel } from "./noticia";
 import { PerfilModel } from "./perfil";
 import { UsuariosAmigosModel } from "./usuarios_amigos";
+import { CompanyiaModel } from "./companyia";
 
 export class UsuarioModel extends Model<Usuario> {}
 
@@ -28,6 +29,11 @@ UsuarioModel.init(
     contrasenya: {
       type: DataTypes.STRING(45),
       allowNull: false,
+    },
+    rol: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+      defaultValue: "USER",
     },
     activado: {
       type: DataTypes.BOOLEAN,
@@ -113,6 +119,11 @@ PerfilModel.belongsTo(UsuarioModel, {
 
 UsuarioModel.hasMany(UsuariosAmigosModel, {
   as: "usuarios_amigos",
+  foreignKey: "usuarioId",
+});
+
+UsuarioModel.hasOne(CompanyiaModel, {
+  as: "usuario",
   foreignKey: "usuarioId",
 });
 

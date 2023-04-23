@@ -1,6 +1,7 @@
 import { Ciudad } from "./ciudad.interface";
 import { Noticia } from "./noticia.interface";
 import { Sala } from "./sala.interface";
+import { Usuario } from "../../../escaperank-admin/src/app/usuarios/interfaces/usuario.interface";
 
 export interface Companyia {
   id?: string | null;
@@ -20,6 +21,8 @@ export interface Companyia {
   instagram?: string | null;
   puntuacion?: string | null;
   rango?: string | null;
+  usuarioId?: number | null;
+  usuario?: Usuario | null;
   ciudadId?: string | null;
   ciudad?: Ciudad;
   noticias?: Noticia[] | null;

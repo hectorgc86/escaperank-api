@@ -1,4 +1,4 @@
-import { LoginRequest } from "../interfaces/login.interface";
+import { Login, LoginRequest } from "../interfaces/login.interface";
 import { Usuario } from "../interfaces/usuario.interface";
 import { UsuarioModel } from "../models/usuario";
 import { Op, Sequelize } from "sequelize";
@@ -10,6 +10,8 @@ import { CiudadModel } from "../models/ciudad";
 import { Ciudad } from "../interfaces/ciudad.interface";
 import { ProvinciaModel } from "../models/provincia";
 import { Provincia } from "../interfaces/provincia.interface";
+import { obtenerCompanyiaPorUsuario } from "./companyia";
+import { Companyia } from "../interfaces/companyia.interface";
 
 const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
   const usuarioExistente = (await UsuarioModel.findOne({
@@ -26,7 +28,21 @@ const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
   if (!usuarioExistente) {
     throw "No se encuentra el usuario";
   } else {
-    return generarToken(usuarioExistente.id as unknown as string);
+    let response: Login = generarToken(
+      usuarioExistente.id as unknown as string
+    );
+
+    if (usuarioExistente.rol === "GAMEMASTER") {
+      let companyia = (await obtenerCompanyiaPorUsuario(
+        usuarioExistente.id!
+      )) as Companyia;
+
+      response.companyiaId = companyia.id;
+    }
+
+    response.rol = usuarioExistente.rol;
+
+    return response;
   }
 };
 
