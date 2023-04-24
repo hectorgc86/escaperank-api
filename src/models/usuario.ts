@@ -5,6 +5,8 @@ import { NoticiaModel } from "./noticia";
 import { PerfilModel } from "./perfil";
 import { UsuariosAmigosModel } from "./usuarios_amigos";
 import { CompanyiaModel } from "./companyia";
+import { EquipoModel } from "./equipo";
+import { EquiposUsuariosModel } from "./equipos_usuarios";
 
 export class UsuarioModel extends Model<Usuario> {}
 
@@ -87,20 +89,6 @@ UsuarioModel.init(
   }
 );
 
-// UsuarioModel.belongsToMany(UsuarioModel, {
-//   as: "amigo_id_usuarios",
-//   through: UsuariosAmigosModel,
-//   foreignKey: "usuario_id",
-//   otherKey: "amigo_id",
-// });
-
-// UsuarioModel.belongsToMany(UsuarioModel, {
-//   as: "usuario_id_usuarios",
-//   through: UsuariosAmigosModel,
-//   foreignKey: "amigo_id",
-//   otherKey: "usuario_id",
-// });
-
 NoticiaModel.belongsTo(UsuarioModel, {
   as: "usuario",
   foreignKey: "usuarioId",
@@ -117,17 +105,28 @@ PerfilModel.belongsTo(UsuarioModel, {
   foreignKey: "usuarioId",
 });
 
-UsuarioModel.hasMany(UsuariosAmigosModel, {
-  as: "usuarios_amigos",
-  foreignKey: "usuarioId",
-});
-
 UsuarioModel.hasOne(CompanyiaModel, {
   as: "usuario",
   foreignKey: "usuarioId",
 });
 
-UsuarioModel.hasMany(UsuariosAmigosModel, {
-  as: "amigo_usuarios_amigos",
+UsuarioModel.belongsToMany(EquipoModel, {
+  through: EquiposUsuariosModel,
+  foreignKey: "usuarioId",
+  otherKey: "equipoId",
+  as: "equipos",
+});
+
+EquipoModel.belongsToMany(UsuarioModel, {
+  through: EquiposUsuariosModel,
+  foreignKey: "equipoId",
+  otherKey: "usuarioId",
+  as: "usuarios",
+});
+
+UsuarioModel.belongsToMany(UsuarioModel, {
+  through: UsuariosAmigosModel,
   foreignKey: "amigoId",
+  otherKey: "usuarioId",
+  as: "amigos",
 });

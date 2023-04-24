@@ -3,6 +3,7 @@ import {
   deleteAmigo,
   deleteUsuario,
   getAmigosUsuario,
+  getEquiposUsuario,
   getUsuario,
   getUsuarios,
   getUsuariosEquipo,
@@ -18,6 +19,7 @@ const router = Router();
 router.get("/", checkSession, getUsuarios);
 router.get("/:id", checkSession, getUsuario);
 router.get("/:id/amigos", checkSession, getAmigosUsuario);
+router.get("/:id/equipos", checkSession, getEquiposUsuario);
 router.get("/equipo/:idEquipo", checkSession, getUsuariosEquipo);
 router.post("/", checkSession, postUsuario);
 router.post("/:id/amigos", checkSession, postAmigo);

@@ -36,13 +36,6 @@ EquipoModel.init(
   }
 );
 
-// SalaModel.belongsToMany(EquipoModel, {
-//   as: "equipo_id_equipos",
-//   through: PartidaModel,
-//   foreignKey: "sala_id",
-//   otherKey: "equipo_id",
-// });
-
 NoticiaModel.belongsTo(EquipoModel, { as: "equipo", foreignKey: "equipoId" });
 EquipoModel.hasMany(NoticiaModel, { as: "noticias", foreignKey: "equipoId" });
 

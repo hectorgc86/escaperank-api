@@ -2,13 +2,9 @@ import { Perfil } from "../interfaces/perfil.interface";
 import { PerfilModel } from "../models/perfil";
 
 const obtenerPerfil = async (id: string) => {
-  const record = (await PerfilModel.findOne({
+  const record = await PerfilModel.findOne({
     where: { id },
-    include: "usuario",
-  })) as Perfil;
-
-  record.usuario!.contrasenya = null;
-
+  });
   return record;
 };
 

@@ -1,11 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
-import { UsuarioModel } from "./usuario";
+import { EquiposUsuarios } from "../interfaces/equipos_usuarios.interface";
 
-export class UsuariosAmigosModel extends Model<UsuariosAmigos> {}
+export class EquiposUsuariosModel extends Model<EquiposUsuarios> {}
 
-UsuariosAmigosModel.init(
+EquiposUsuariosModel.init(
   {
     usuarioId: {
       type: DataTypes.INTEGER,
@@ -16,24 +15,19 @@ UsuariosAmigosModel.init(
         key: "id",
       },
     },
-    amigoId: {
+    equipoId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {
-        model: "usuarios",
+        model: "equipos",
         key: "id",
       },
-    },
-    estado: {
-      type: DataTypes.ENUM("pendiente", "aceptado", "borrado"),
-      allowNull: false,
-      defaultValue: "pendiente",
     },
   },
   {
     sequelize,
-    tableName: "usuarios_amigos",
+    tableName: "equipos_usuarios",
     timestamps: false,
     underscored: true,
   }
