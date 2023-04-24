@@ -9,7 +9,10 @@ const host = process.env.MYSQL_HOST;
 const sequelize = new Sequelize(database, username, password,
   {
     host,
-    dialect: driver
+    dialect: driver,
+    define: {
+      timestamps: false
+  }
   });
 const dbConnectMySql = async () => {
   try {

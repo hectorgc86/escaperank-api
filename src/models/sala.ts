@@ -12,9 +12,7 @@ import { CategoriaModel } from "./categoria";
 import { DificultadModel } from "./dificultad";
 import { SalasCategoriasModel } from "./salas_categorias";
 
-export class SalaModel extends Model<Sala> {
-
-}
+export class SalaModel extends Model<Sala> {}
 
 SalaModel.init(
   {
@@ -172,7 +170,6 @@ SalaModel.init(
         key: "id",
       },
     },
-    
   },
   {
     sequelize,
@@ -181,7 +178,6 @@ SalaModel.init(
     underscored: true,
   }
 );
-
 
 SalaModel.belongsToMany(EquipoModel, {
   as: "equipos",
@@ -197,23 +193,33 @@ SalaModel.belongsToMany(PublicoModel, {
   otherKey: "publicoId",
 });
 
-
 SalaModel.belongsToMany(CategoriaModel, {
   through: SalasCategoriasModel,
-  foreignKey: 'salaId',
-  otherKey: 'categoriaId',
-  as: 'categorias'
+  foreignKey: "salaId",
+  otherKey: "categoriaId",
+  as: "categorias",
 });
 
 CategoriaModel.belongsToMany(SalaModel, {
   through: SalasCategoriasModel,
-  otherKey: 'salaId',
-  foreignKey: 'categoriaId',
-  as: 'salas'
+  otherKey: "salaId",
+  foreignKey: "categoriaId",
+  as: "salas",
 });
 
-TematicaModel.belongsToMany(SalaModel, { through: 'salas_tematicas', as: 'salas', foreignKey: 'tematica_id' });
-SalaModel.belongsToMany(TematicaModel, { through: 'salas_tematicas', as: 'tematicas', foreignKey: 'sala_id' });
+TematicaModel.belongsToMany(SalaModel, {
+  through: SalasTematicasModel,
+  otherKey: "salaId",
+  foreignKey: "tematicaId",
+  as: "salas",
+});
+SalaModel.belongsToMany(TematicaModel, {
+  through: SalasTematicasModel,
+  foreignKey: "salaId",
+  otherKey: "tematicaId",
+  as: "tematicas",
+  
+});
 
 PartidaModel.belongsTo(SalaModel, { as: "sala", foreignKey: "salaId" });
 SalaModel.hasMany(PartidaModel, { as: "partidas", foreignKey: "salaId" });
