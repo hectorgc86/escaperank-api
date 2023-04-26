@@ -38,9 +38,9 @@ const getNoticiasUsuario = async (req: Request, res: Response) => {
   }
 };
 
-const postNoticia = async (req: Request, res: Response) => {
+const postNoticia = async ({ body }: Request, res: Response) => {
   try {
-    const result = await insertarNoticia(req.body);
+    const result = await insertarNoticia(body);
     res.send({ result, mensaje: "Noticia guardada correctamente" });
   } catch (e) {
     handleHttp(res, "Error guardando noticia", e);

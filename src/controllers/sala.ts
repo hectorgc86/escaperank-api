@@ -53,7 +53,6 @@ const getSalasCompanyia = async (req: Request, res: Response) => {
 
 const postSala = async ({ body }: Request, res: Response) => {
   try {
-    console.log(body);
     const result = await guardarSala(body);
     res.send(result);
   } catch (e) {

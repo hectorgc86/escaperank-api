@@ -4,7 +4,7 @@ import { Usuario } from "./usuario.interface";
 
 export interface Noticia {
   id?: number;
-  fecha?: string;
+  fecha?: any;
   titular?: string | null;
   textoCorto?: string | null;
   textoLargo?: string | null;
@@ -19,4 +19,5 @@ export interface Noticia {
   companyia?: Companyia;
   usuario?: Usuario;
   equipo?: Equipo;
+  imagenBase64?:string;
 }

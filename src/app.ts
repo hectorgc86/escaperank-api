@@ -11,7 +11,8 @@ const app = express();
 
 //anyadir rutas de origen en cors
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 app.use(BASE_PATH, router);
 
 dbConnectMySql();
