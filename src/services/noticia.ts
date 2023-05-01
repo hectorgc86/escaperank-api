@@ -31,41 +31,54 @@ const obtenerNoticiasUsuario = async (idUsuario: string) => {
   return records;
 };
 
+const obtenerPublicacionesUsuario = async (idUsuario: string) => {
+  const records = await NoticiaModel.sequelize?.query(
+    "SELECT * FROM noticias WHERE equipo_id IN( SELECT DISTINCT equipo_id FROM equipos_usuarios WHERE usuario_id = :idUsuario ) OR usuario_id = :idUsuario ORDER by fecha DESC;",
+    {
+      replacements: { idUsuario: idUsuario },
+      type: QueryTypes.SELECT,
+      model: NoticiaModel,
+      mapToModel: true,
+    }
+  );
+  return records;
+};
+
 const insertarNoticia = async (noticia: Noticia) => {
   const genId = crypto.randomUUID();
 
-let fecha = noticia.fecha.year+'-'+noticia.fecha.month+'-'+noticia.fecha.day;
-noticia.fecha=fecha;
+  let fecha =
+    noticia.fecha.year + "-" + noticia.fecha.month + "-" + noticia.fecha.day;
+  noticia.fecha = fecha;
 
-    const imgExtension = noticia.imagen?.split(";")[0].split("/")[1];
+  const imgExtension = noticia.imagen?.split(";")[0].split("/")[1];
 
-    noticia.imagen=genId + "." + imgExtension;
+  noticia.imagen = genId + "." + imgExtension;
   const record = await NoticiaModel.create({ ...noticia });
- 
-  if (noticia.imagenBase64!=null){
-    await imagekit.upload({
-      folder:"/img/noticias/",
-      useUniqueFileName:false,
-      file :noticia.imagenBase64, //required
-      fileName : genId + "." + imgExtension,   //required
-      extensions: [
+
+  if (noticia.imagenBase64 != null) {
+    await imagekit
+      .upload({
+        folder: "/img/noticias/",
+        useUniqueFileName: false,
+        file: noticia.imagenBase64, //required
+        fileName: genId + "." + imgExtension, //required
+        extensions: [
           {
-              name: "google-auto-tagging",
-              maxTags: 5,
-              minConfidence: 95
-          }
-      ]
-  }).then(response => {
-      console.log(response);
-  }).catch(error => {
-      console.log(error);
-  });
-}
+            name: "google-auto-tagging",
+            maxTags: 5,
+            minConfidence: 95,
+          },
+        ],
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   return record;
-
-
-
-
 };
 
 const actualizarNoticia = async (
@@ -85,6 +98,7 @@ export {
   obtenerNoticia,
   obtenerNoticias,
   obtenerNoticiasUsuario,
+  obtenerPublicacionesUsuario,
   insertarNoticia,
   actualizarNoticia,
   borrarNoticia,

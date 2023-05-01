@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { guardarSala, obtenerSala, obtenerSalas, obtenerSalasPorCompanyia } from "../services/sala";
+import {
+  guardarSala,
+  obtenerSala,
+  obtenerSalas,
+  obtenerSalasPorCompanyia,
+} from "../services/sala";
 import { obtenerRankingSala } from "../services/estadisticas";
-import { Sala } from "../interfaces/salas_categorias.interface";
 
 const getSala = async (req: Request, res: Response) => {
   try {
@@ -42,14 +46,13 @@ const getSalas = async (req: Request, res: Response) => {
 const getSalasCompanyia = async (req: Request, res: Response) => {
   try {
     const companyiaId = req.params.id as unknown as string;
-   console.log(companyiaId);
+    console.log(companyiaId);
     const result = await obtenerSalasPorCompanyia(companyiaId);
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo salas", e);
   }
 };
-
 
 const postSala = async ({ body }: Request, res: Response) => {
   try {

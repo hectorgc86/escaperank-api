@@ -4,6 +4,7 @@ import {
   deleteUsuario,
   getAmigosUsuario,
   getEquiposUsuario,
+  getPublicacionesUsuario,
   getUsuario,
   getUsuarios,
   getUsuariosEquipo,
@@ -20,6 +21,7 @@ router.get("/", checkSession, getUsuarios);
 router.get("/:id", checkSession, getUsuario);
 router.get("/:id/amigos", checkSession, getAmigosUsuario);
 router.get("/:id/equipos", checkSession, getEquiposUsuario);
+router.get("/:id/publicaciones", checkSession, getPublicacionesUsuario);
 router.get("/equipo/:idEquipo", checkSession, getUsuariosEquipo);
 router.post("/", checkSession, postUsuario);
 router.post("/:id/amigos", checkSession, postAmigo);

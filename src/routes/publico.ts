@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { getPublico } from "../controllers/publico";
-import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", checkSession, getPublico);
+router.get("/", getPublico);
 
 export { router };

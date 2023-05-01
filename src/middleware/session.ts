@@ -8,15 +8,13 @@ const checkSession = (req: LoginRequest, res: Response, next: NextFunction) => {
     const jwt = jwtByUser.split(" ").pop();
     const isUser = verificarToken(`${jwt}`);
     if (!isUser) {
-      res.status(401);
-      res.send("Sesión no válida");
+      res.status(401).send({ error: "Sesión no válida" });
     } else {
       req.usuario = isUser;
       next();
     }
   } catch (e) {
-    res.status(400);
-    res.send("Sesión no válida");
+    res.status(401).send({ error: "Sesión no válida" });
   }
 };
 

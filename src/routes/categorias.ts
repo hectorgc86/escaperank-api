@@ -4,6 +4,6 @@ import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.get("/", checkSession, getCategorias);
+router.get("/", getCategorias);
 
 export { router };
