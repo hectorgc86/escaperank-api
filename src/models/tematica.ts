@@ -1,8 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
 import { Tematica } from "../interfaces/tematica.interface";
-import { SalaModel } from "./sala";
-import { SalasTematicasModel } from "./salas_tematicas";
 
 export class TematicaModel extends Model<Tematica> {}
 
@@ -37,5 +35,3 @@ TematicaModel.init(
     underscored: true,
   }
 );
-
-

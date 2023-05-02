@@ -1,6 +1,9 @@
+import { Op } from "sequelize";
 import { Equipo } from "../interfaces/equipo.interface";
 import { EquipoModel } from "../models/equipo";
 import { UsuarioModel } from "../models/usuario";
+import sequelize from "sequelize";
+import { PerfilModel } from "../models/perfil";
 
 const obtenerEquipo = async (id: string) => {
   const record = await EquipoModel.findOne({
@@ -18,18 +21,25 @@ const obtenerEquipos = async () => {
 };
 
 const obtenerEquiposUsuario = async (idUsuario: string) => {
-  const records = await EquipoModel.findAll({
-    where: { activado: true },
-    include: [
-      {
-        model: UsuarioModel,
-        as: "usuarios",
-        where: { id: idUsuario },
-        attributes: [],
+  const equipos = await EquipoModel.findAll({
+    where: {
+      activado: true,
+      id: {
+        [Op.in]: sequelize.literal(
+          `(SELECT equipo_id FROM equipos_usuarios WHERE usuario_id = ${idUsuario})`
+        ),
       },
-    ],
+    },
+    include: {
+      model: UsuarioModel,
+      as: "usuarios",
+      where: { activado: true },
+      through: { attributes: [] },
+      include: ["perfil"],
+    },
   });
-  return records;
+
+  return equipos;
 };
 
 const insertarEquipo = async (equipo: Equipo) => {
