@@ -4,6 +4,7 @@ import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
 import { UsuariosAmigosModel } from "../models/usuarios_amigos";
 import { PerfilModel } from "../models/perfil";
+import { Estado } from "../interfaces/estado.interface";
 
 const obtenerUsuario = async (id: string) => {
   const record = await UsuarioModel.findOne({
@@ -114,14 +115,14 @@ const insertarAmigo = async (id: number, emailAmigo: string) => {
     const usuarioAmigo: UsuariosAmigos = {
       usuarioId: id,
       amigoId: amigo.id,
-      estado: 0,
+      estado: Estado.pendiente,
     };
     record = await UsuariosAmigosModel.create({ ...usuarioAmigo });
   } else {
     const usuarioAmigoExistente: UsuariosAmigos = {
       usuarioId: id,
       amigoId: amigo.id,
-      estado: 1,
+      estado: Estado.aceptado,
     };
     record = await usuarioAmigoModel.update({ ...usuarioAmigoExistente });
   }
@@ -153,7 +154,7 @@ const actualizarAmigo = async (id: number, idAmigo: number) => {
   const usuarioAmigo: UsuariosAmigos = {
     usuarioId: id,
     amigoId: idAmigo,
-    estado: 2,
+    estado: Estado.aceptado,
   };
 
   const record = await usuarioAmigoModel[0].update({ ...usuarioAmigo });
@@ -166,27 +167,28 @@ const borrarUsuario = async (usuarioModel: UsuarioModel) => {
 };
 
 const borrarAmigo = async (id: number, idAmigo: number) => {
-  const usuarioAmigoModel = (await UsuariosAmigosModel.sequelize?.query(
-    "SELECT * FROM usuarios_amigos " +
-      "WHERE (usuario_id = :id and amigo_id = :idAmigo) or (usuario_id = :idAmigo and amigo_id = :id)",
-    {
-      replacements: { id: id, idAmigo: idAmigo },
-      type: QueryTypes.SELECT,
-    }
-  )) as UsuariosAmigosModel[];
+  const usuarioAmigoModel = (await UsuariosAmigosModel.findOne({
+    where: {
+      [Op.or]: [
+        { usuarioId: id, amigoId: idAmigo },
+        { usuarioId: idAmigo, amigoId: id },
+      ],
+    },
+  })) as UsuariosAmigosModel;
 
-  if (usuarioAmigoModel == null) {
+  if (!usuarioAmigoModel) {
     return "No se puede borrar amigo";
   }
 
   const usuarioAmigo: UsuariosAmigos = {
     usuarioId: id,
     amigoId: idAmigo,
-    estado: 0,
+    estado: Estado.borrado,
   };
 
-  const record = await usuarioAmigoModel[0].update({ ...usuarioAmigo });
-  return record;
+  await usuarioAmigoModel.update(usuarioAmigo);
+
+  return usuarioAmigoModel;
 };
 
 export {
