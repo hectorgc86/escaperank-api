@@ -1,9 +1,9 @@
 import { Op } from "sequelize";
-import { Equipo } from "../interfaces/equipo.interface";
+import { Equipo, EquipoRequest } from "../interfaces/equipo.interface";
 import { EquipoModel } from "../models/equipo";
 import { UsuarioModel } from "../models/usuario";
 import sequelize from "sequelize";
-import { PerfilModel } from "../models/perfil";
+import { EquiposUsuariosModel } from "../models/equipos_usuarios";
 
 const obtenerEquipo = async (id: string) => {
   const record = await EquipoModel.findOne({
@@ -42,8 +42,23 @@ const obtenerEquiposUsuario = async (idUsuario: string) => {
   return equipos;
 };
 
-const insertarEquipo = async (equipo: Equipo) => {
-  const record = await EquipoModel.create({ ...equipo });
+const insertarEquipo = async (equipoRequest: EquipoRequest) => {
+  const record = (await EquipoModel.create({
+    nombre: equipoRequest.nombre,
+    avatar: "",
+    activado: true,
+  })) as Equipo;
+
+  for (const u of equipoRequest.usuarios!) {
+    const usuario = await UsuarioModel.findByPk(u.id);
+    if (usuario) {
+      await EquiposUsuariosModel.create({
+        usuarioId: u.id,
+        equipoId: record.id,
+      });
+    }
+  }
+
   return record;
 };
 

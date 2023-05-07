@@ -8,7 +8,9 @@ import { CompanyiaModel } from "./companyia";
 import { EquipoModel } from "./equipo";
 import { EquiposUsuariosModel } from "./equipos_usuarios";
 
-export class UsuarioModel extends Model<Usuario> {}
+export class UsuarioModel extends Model<Usuario> {
+  amigos: any;
+}
 
 UsuarioModel.init(
   {

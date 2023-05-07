@@ -40,7 +40,8 @@ const getEquiposUsuario = async (req: Request, res: Response) => {
 
 const postEquipo = async (req: Request, res: Response) => {
   try {
-    const result = await insertarEquipo(req.body);
+    const { equipoRequest } = req.body;
+    const result = await insertarEquipo(equipoRequest);
     res.send({ result, mensaje: "Equipo guardado correctamente" });
   } catch (e) {
     handleHttp(res, "Error guardando equipo", e);

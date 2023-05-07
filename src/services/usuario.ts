@@ -65,7 +65,9 @@ const obtenerAmigosUsuario = async (id: string) => {
       {
         model: UsuarioModel,
         as: "amigos",
-        attributes: [],
+        through: {
+          attributes: ["estado"],
+        },
       },
       {
         model: PerfilModel,
@@ -74,7 +76,16 @@ const obtenerAmigosUsuario = async (id: string) => {
     ],
     attributes: { exclude: ["contrasenya"] },
   });
-  return records;
+
+  return records.map((record) => {
+    const estado = record.amigos![0].UsuariosAmigosModel.estado;
+    const amigos = null;
+    return {
+      ...record.toJSON(),
+      estado,
+      amigos,
+    };
+  });
 };
 
 const obtenerUsuariosEquipo = async (idEquipo: string) => {
@@ -104,25 +115,25 @@ const insertarAmigo = async (id: number, emailAmigo: string) => {
   })) as Usuario;
 
   if (amigo == null || amigo.id == id) {
-    return "No se puede agregar amigo";
+    return "No se ha encontrado ningún usuario con el correo introducido";
   }
 
   const usuarioAmigoModel = await UsuariosAmigosModel.findOne({
-    where: { usuarioId: id, amigoId: amigo.id },
+    where: { usuarioId: amigo.id, amigoId: id },
   });
 
   if (usuarioAmigoModel == null) {
     const usuarioAmigo: UsuariosAmigos = {
-      usuarioId: id,
-      amigoId: amigo.id,
+      usuarioId: amigo.id,
+      amigoId: id,
       estado: Estado.pendiente,
     };
     record = await UsuariosAmigosModel.create({ ...usuarioAmigo });
   } else {
     const usuarioAmigoExistente: UsuariosAmigos = {
-      usuarioId: id,
-      amigoId: amigo.id,
-      estado: Estado.aceptado,
+      usuarioId: amigo.id,
+      amigoId: id,
+      estado: Estado.pendiente,
     };
     record = await usuarioAmigoModel.update({ ...usuarioAmigoExistente });
   }
@@ -137,33 +148,34 @@ const actualizarUsuario = async (
   return record;
 };
 
-const actualizarAmigo = async (id: number, idAmigo: number) => {
-  const usuarioAmigoModel = (await UsuariosAmigosModel.sequelize?.query(
-    "SELECT * FROM usuarios_amigos " +
-      "WHERE (usuario_id = :id and amigo_id = :idAmigo) or (usuario_id = :idAmigo and amigo_id = :id)",
-    {
-      replacements: { id: id, idAmigo: idAmigo },
-      type: QueryTypes.SELECT,
-    }
-  )) as UsuariosAmigosModel[];
+const borrarUsuario = async (usuarioModel: UsuarioModel) => {
+  const record = await usuarioModel.destroy();
+  return record;
+};
 
-  if (usuarioAmigoModel == null) {
+const actualizarAmigo = async (id: number, idAmigo: number) => {
+  const usuarioAmigoModel = (await UsuariosAmigosModel.findOne({
+    where: {
+      [Op.or]: [
+        { usuarioId: id, amigoId: idAmigo },
+        { usuarioId: idAmigo, amigoId: id },
+      ],
+    },
+  })) as UsuariosAmigosModel;
+
+  if (!usuarioAmigoModel) {
     return "No se puede actualizar amigo";
   }
 
   const usuarioAmigo: UsuariosAmigos = {
-    usuarioId: id,
-    amigoId: idAmigo,
+    amigoId: usuarioAmigoModel.dataValues.amigoId,
+    usuarioId: usuarioAmigoModel.dataValues.usuarioId,
     estado: Estado.aceptado,
   };
 
-  const record = await usuarioAmigoModel[0].update({ ...usuarioAmigo });
-  return record;
-};
+  await usuarioAmigoModel.update(usuarioAmigo);
 
-const borrarUsuario = async (usuarioModel: UsuarioModel) => {
-  const record = await usuarioModel.destroy();
-  return record;
+  return usuarioAmigoModel;
 };
 
 const borrarAmigo = async (id: number, idAmigo: number) => {
@@ -181,14 +193,15 @@ const borrarAmigo = async (id: number, idAmigo: number) => {
   }
 
   const usuarioAmigo: UsuariosAmigos = {
-    usuarioId: id,
-    amigoId: idAmigo,
+    amigoId: usuarioAmigoModel.dataValues.amigoId,
+    usuarioId: usuarioAmigoModel.dataValues.usuarioId,
     estado: Estado.borrado,
   };
 
   await usuarioAmigoModel.update(usuarioAmigo);
 
   return usuarioAmigoModel;
+ 
 };
 
 export {

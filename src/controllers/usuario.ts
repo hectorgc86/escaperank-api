@@ -109,18 +109,6 @@ const putUsuario = async ({ params, body }: Request, res: Response) => {
   }
 };
 
-const putAmigo = async ({ params, body }: Request, res: Response) => {
-  try {
-    const { id } = params as any;
-    const { emailAmigo } = body;
-
-    const updateResult = await actualizarAmigo(id, emailAmigo);
-    return res.send(updateResult);
-  } catch (e) {
-    handleHttp(res, "Error actualizando amigo", e);
-  }
-};
-
 const deleteUsuario = async ({ params }: Request, res: Response) => {
   try {
     const { id } = params;
@@ -133,6 +121,17 @@ const deleteUsuario = async ({ params }: Request, res: Response) => {
     res.send(deleteResult);
   } catch (e) {
     handleHttp(res, "Error borrando usuario", e);
+  }
+};
+
+const putAmigo = async ({ params, body }: Request, res: Response) => {
+  try {
+    const { id, idAmigo } = params as any;
+
+    const updateResult = await actualizarAmigo(id, idAmigo);
+    return res.send(updateResult);
+  } catch (e) {
+    handleHttp(res, "Error actualizando amigo", e);
   }
 };
 
