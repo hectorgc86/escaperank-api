@@ -1,4 +1,4 @@
-import { Op, QueryTypes } from "sequelize";
+import { Op, QueryTypes, Sequelize } from "sequelize";
 import { Usuario } from "../interfaces/usuario.interface";
 import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
@@ -23,27 +23,6 @@ const obtenerUsuarios = async () => {
   });
   return records;
 };
-
-// const obtenerAmigosUsuario = async (id: string) => {
-//   const records = await UsuarioModel.sequelize?.query(
-//     "SELECT usuarios.* , usuarios_amigos.estado , perfiles.* " +
-//       "FROM usuarios, usuarios_amigos, perfiles " +
-//       "WHERE usuarios.id = usuarios_amigos.amigo_id " +
-//       "AND usuarios_amigos.amigo_id = perfiles.usuario_id " +
-//       "AND usuarios_amigos.usuario_id = :id " +
-//       "AND usuarios_amigos.estado = 'aceptado' " +
-//       "OR " +
-//       "usuarios.id = usuarios_amigos.usuario_id " +
-//       "AND usuarios_amigos.usuario_id = perfiles.usuario_id " +
-//       "AND usuarios_amigos.amigo_id = :id " +
-//       "AND(usuarios_amigos.estado = 'aceptado' OR usuarios_amigos.estado = 'pendiente')",
-//     {
-//       replacements: { id: id },
-//       type: QueryTypes.SELECT,
-//     }
-//   );
-//   return records;
-// };
 
 const obtenerAmigosUsuario = async (id: string) => {
   const records = await UsuarioModel.findAll({
@@ -77,15 +56,29 @@ const obtenerAmigosUsuario = async (id: string) => {
     attributes: { exclude: ["contrasenya"] },
   });
 
-  return records.map((record) => {
+  return Promise.all(records.map( async (record) => {
     const estado = record.amigos![0].UsuariosAmigosModel.estado;
     const amigos = null;
+    const amigosComun = await UsuarioModel.sequelize?.query(
+      "SELECT COUNT(*) AS `counter` " +
+        "FROM `usuarios_amigos` AS `ua1` " +
+        "INNER JOIN `usuarios_amigos` AS `ua2` ON `ua1`.`amigo_id` = `ua2`.`amigo_id`" +
+        " WHERE `ua1`.`usuario_id` = :usuarioId AND `ua2`.`usuario_id` = :amigoId AND `ua1`.`estado` = 'aceptado' AND `ua2`.`estado` = 'aceptado'",
+      {
+        replacements: { usuarioId: id , amigoId: record.id},
+        type: QueryTypes.SELECT,
+      }
+    ) as UsuarioModel[] | undefined;
+
+    const amigosComunCount = amigosComun && amigosComun.length > 0 ? amigosComun[0].counter : 0;
+
     return {
       ...record.toJSON(),
-      estado,
-      amigos,
+      estado: estado,
+      amigos: amigos,
+      amigosComun: amigosComunCount,
     };
-  });
+  }));
 };
 
 const obtenerUsuariosEquipo = async (idEquipo: string) => {
@@ -201,7 +194,6 @@ const borrarAmigo = async (id: number, idAmigo: number) => {
   await usuarioAmigoModel.update(usuarioAmigo);
 
   return usuarioAmigoModel;
- 
 };
 
 export {

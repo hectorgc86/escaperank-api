@@ -9,6 +9,8 @@ import { EquipoModel } from "./equipo";
 import { EquiposUsuariosModel } from "./equipos_usuarios";
 
 export class UsuarioModel extends Model<Usuario> {
+  id: any;
+  counter: any;
   amigos: any;
 }
 
