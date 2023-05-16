@@ -5,6 +5,9 @@ import {
   obtenerSala,
   obtenerSalas,
   obtenerSalasPorCompanyia,
+  actualizarSala,
+  cerrarSala,
+  abrirSala
 } from "../services/sala";
 import { obtenerRankingSala } from "../services/estadisticas";
 
@@ -63,4 +66,47 @@ const postSala = async ({ body }: Request, res: Response) => {
   }
 };
 
-export { getSala, getRankingSala, getSalas, getSalasCompanyia, postSala };
+const putCerrarSala = async ({ params, body }: Request, res: Response) => {
+  try {
+    const { id } = params;
+    const result = await obtenerSala(id);
+    if (!result) {
+      return res.send("No se encuentra sala con ese id");
+    }
+    const updateResult = await cerrarSala(result, body);
+    return res.send(updateResult);
+  } catch (e) {
+    handleHttp(res, "Error actualizando ciudad", e);
+  }
+};
+
+const putAbrirSala = async ({ params, body }: Request, res: Response) => {
+  try {
+    const { id } = params;
+    const result = await obtenerSala(id);
+    if (!result) {
+      return res.send("No se encuentra sala con ese id");
+    }
+    const updateResult = await abrirSala(result, body);
+    return res.send(updateResult);
+  } catch (e) {
+    handleHttp(res, "Error actualizando ciudad", e);
+  }
+};
+
+const putSala =  async ({ params, body }: Request, res: Response) => {
+  try {
+    const { id } = params;
+    const result = await obtenerSala(id);
+    if (!result) {
+      return res.send("No se encuentra sala con ese id");
+    }
+    const updateResult = await actualizarSala(result, body);
+    return res.send(updateResult);
+  } catch (e) {
+    handleHttp(res, "Error actualizando ciudad", e);
+  }
+};
+
+
+export { getSala, getRankingSala, getSalas, getSalasCompanyia, postSala,putCerrarSala,putAbrirSala,putSala};

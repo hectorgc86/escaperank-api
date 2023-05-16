@@ -30,6 +30,11 @@ SalaModel.init(
       allowNull: false,
       defaultValue: 0,
     },
+    desactivada: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
+    },
     duracion: {
       type: DataTypes.STRING(11),
       allowNull: true,

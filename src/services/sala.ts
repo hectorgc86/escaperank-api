@@ -265,4 +265,47 @@ const guardarSala = async (sala: Sala) => {
   }
 };
 
-export { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia, guardarSala };
+const actualizarSala = async (salaModel: SalaModel, sala: Sala) => {
+  const genId = crypto.randomUUID();
+  const imgExtension = sala.imagenEstrecha?.split(";")[0].split("/")[1];
+  let imagen = sala.imagenEstrecha;
+  if (imagen!=undefined){
+  sala.imagenAncha= genId + "." + imgExtension;
+  sala.imagenEstrecha= genId + "." + imgExtension;
+  }
+  const record = await salaModel.update({ ...sala });
+  if (imagen!=undefined){
+    await imagekit.upload({
+      folder:"/img/salas/estrechas/",
+      useUniqueFileName:false,
+      file :imagen, //required
+      fileName : genId + "." + imgExtension,   //required
+      extensions: [
+          {
+              name: "google-auto-tagging",
+              maxTags: 5,
+              minConfidence: 95
+          }
+      ]
+  }).then(response => {
+      console.log(response);
+  }).catch(error => {
+      console.log(error);
+  });
+}
+  return record;
+};
+
+const cerrarSala = async (salaModel: SalaModel, sala: Sala) =>{
+  sala.desactivada=true;
+  const record = await salaModel.update({ ...sala});
+  return record;
+}
+const abrirSala = async (salaModel: SalaModel, sala: Sala)=>{
+  sala.desactivada=false;
+  const record = await salaModel.update({ ...sala});
+  return record;
+}
+
+
+export { obtenerSala, obtenerSalas, obtenerSalasPorCompanyia, guardarSala,actualizarSala,cerrarSala,abrirSala };
