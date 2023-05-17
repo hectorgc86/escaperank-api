@@ -13,13 +13,18 @@ import { Provincia } from "../interfaces/provincia.interface";
 import { obtenerCompanyiaPorUsuario } from "./companyia";
 import { Companyia } from "../interfaces/companyia.interface";
 
-const login = async (loginRequest: LoginRequest, nocript: boolean = false) => {
+const login = async (loginRequest: LoginRequest) => {
   const usuarioExistente = (await UsuarioModel.findOne({
     where: Sequelize.or(
-      { email: loginRequest.usuario, contrasenya: loginRequest.contrasenya },
+      {
+        email: loginRequest.usuario,
+        contrasenya: loginRequest.contrasenya,
+        activado: true,
+      },
       Sequelize.and({
         nick: loginRequest.usuario,
         contrasenya: loginRequest.contrasenya,
+        activado: true,
       })
     ),
     include: "perfil",

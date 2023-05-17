@@ -142,7 +142,10 @@ const actualizarUsuario = async (
 };
 
 const borrarUsuario = async (usuarioModel: UsuarioModel) => {
-  const record = await usuarioModel.destroy();
+
+  const updatedValues = { activado: false };
+
+  const record = await usuarioModel.update(updatedValues);
   return record;
 };
 

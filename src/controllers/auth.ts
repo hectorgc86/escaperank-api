@@ -6,9 +6,7 @@ import { RegistroRequest } from "../interfaces/registro.interface";
 
 const postLogin = async ({ body }: LoginRequest, res: Response) => {
   try {
-    const nocript = body.nocript ? true : false;
-
-    const result = await login(body, nocript);
+    const result = await login(body);
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error en login", e);
