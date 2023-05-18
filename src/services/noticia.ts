@@ -44,6 +44,14 @@ const obtenerPublicacionesUsuario = async (idUsuario: string) => {
   return records;
 };
 
+
+const obtenerNoticiasPorCompanyia = async (companyiaId: string) => {
+  const records = await NoticiaModel.findAll({
+    where: { companyiaId: companyiaId },
+  });
+  return records;
+};
+
 const insertarNoticia = async (noticia: Noticia) => {
   const genId = crypto.randomUUID();
 
@@ -85,7 +93,38 @@ const actualizarNoticia = async (
   noticiaModel: NoticiaModel,
   noticia: Noticia
 ) => {
+  let fecha =
+  noticia.fecha.year + "-" + noticia.fecha.month + "-" + noticia.fecha.day;
+noticia.fecha = fecha;
+
+const genId = crypto.randomUUID();
+  const imgExtension = noticia.imagenBase64?.split(";")[0].split("/")[1];
+  let imagenBase64 = noticia.imagenBase64;
+  if (imagenBase64!=undefined){
+  noticia.imagen= genId + "." + imgExtension;
+  }
   const record = await noticiaModel.update({ ...noticia });
+  if (imagenBase64!=undefined){
+    await imagekit.upload({
+      folder: "/img/noticias/",
+      useUniqueFileName:false,
+      file :imagenBase64, //required
+      fileName : genId + "." + imgExtension,   //required
+      extensions: [
+          {
+              name: "google-auto-tagging",
+              maxTags: 5,
+              minConfidence: 95
+          }
+      ]
+  }).then(response => {
+      console.log(response);
+  }).catch(error => {
+      console.log(error);
+  });
+}
+  
+  
   return record;
 };
 
@@ -102,4 +141,5 @@ export {
   insertarNoticia,
   actualizarNoticia,
   borrarNoticia,
+  obtenerNoticiasPorCompanyia
 };

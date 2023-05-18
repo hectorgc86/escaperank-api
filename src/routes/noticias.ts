@@ -6,6 +6,7 @@ import {
   putNoticia,
   deleteNoticia,
   getNoticiasUsuario,
+  getNoticiasCompanyia
 } from "../controllers/noticia";
 import { checkSession } from "../middleware/session";
 
@@ -18,5 +19,6 @@ router.put("/:id", checkSession, putNoticia);
 router.post("/", checkSession, postNoticia);
 router.delete("/:id", checkSession, deleteNoticia);
 router.post("/new", checkSession, postNoticia);
+router.get("/companyia/:id", getNoticiasCompanyia);
 
 export { router };

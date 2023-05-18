@@ -7,6 +7,7 @@ import {
   actualizarNoticia,
   borrarNoticia,
   obtenerNoticiasUsuario,
+  obtenerNoticiasPorCompanyia
 } from "../services/noticia";
 
 const getNoticia = async (req: Request, res: Response) => {
@@ -35,6 +36,17 @@ const getNoticiasUsuario = async (req: Request, res: Response) => {
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo noticias del usuario", e);
+  }
+};
+
+const getNoticiasCompanyia = async (req: Request, res: Response) => {
+  try {
+    const companyiaId = req.params.id as unknown as string;
+    console.log(companyiaId);
+    const result = await obtenerNoticiasPorCompanyia(companyiaId);
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo noticias", e);
   }
 };
 
@@ -82,4 +94,5 @@ export {
   postNoticia,
   putNoticia,
   deleteNoticia,
+  getNoticiasCompanyia
 };
