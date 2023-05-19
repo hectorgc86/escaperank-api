@@ -27,6 +27,8 @@ export interface Companyia {
   ciudad?: Ciudad;
   noticias?: Noticia[] | null;
   salas?: Sala[] | null;
+  validada?: boolean;
+  desactivada?: boolean;
 }
 
 export interface CompanyiaRequest {
@@ -41,4 +43,6 @@ export interface CompanyiaRequest {
   codigoPostal?: string | null;
   ciudad?: string | null;
   provincia?: string | null;
+  validada?: boolean;
+  desactivada?: boolean;
 }

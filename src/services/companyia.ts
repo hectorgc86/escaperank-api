@@ -11,7 +11,7 @@ const obtenerCompanyia = async (id: string) => {
 
 const obtenerCompanyiaPorUsuario = async (idUsuario: number) => {
   const record = await CompanyiaModel.findOne({
-    where: { usuarioId: idUsuario },
+    where: { usuarioId: idUsuario ,desactivada:false },
   });
   return record;
 };
@@ -19,6 +19,15 @@ const obtenerCompanyiaPorUsuario = async (idUsuario: number) => {
 const obtenerCompanyias = async () => {
   const records = await CompanyiaModel.findAll({
     include: ["noticias", "salas", "ciudad"],
+    where: { validada: true, desactivada:false },
+  });
+  return records;
+};
+
+const obtenerCompanyiasAValidar = async () => {
+  const records = await CompanyiaModel.findAll({
+    include: ["noticias", "salas", "ciudad"],
+    where: { validada: false, desactivada:false },
   });
   return records;
 };
@@ -36,6 +45,43 @@ const actualizarCompanyia = async (
   return record;
 };
 
+
+const validarCompanyia = async (
+  companyiaModel: CompanyiaModel,
+  companyia: Companyia
+) => {
+  companyia.validada=true;
+  const record = await companyiaModel.update({ ...companyia });
+  return record;
+};
+
+const invalidarCompanyia = async (
+  companyiaModel: CompanyiaModel,
+  companyia: Companyia
+) => {
+  companyia.validada=false;
+  const record = await companyiaModel.update({ ...companyia });
+  return record;
+};
+
+const desactivarCompanyia = async (
+  companyiaModel: CompanyiaModel,
+  companyia: Companyia
+) => {
+  companyia.desactivada=true;
+  const record = await companyiaModel.update({ ...companyia });
+  return record;
+};
+
+const activarCompanyia = async (
+  companyiaModel: CompanyiaModel,
+  companyia: Companyia
+) => {
+  companyia.desactivada=false;
+  const record = await companyiaModel.update({ ...companyia });
+  return record;
+};
+
 const borrarCompanyia = async (companyiaModel: CompanyiaModel) => {
   const record = await companyiaModel.destroy();
   return record;
@@ -48,4 +94,9 @@ export {
   insertarCompanyia,
   actualizarCompanyia,
   borrarCompanyia,
+  obtenerCompanyiasAValidar,
+  validarCompanyia,
+  desactivarCompanyia,
+  activarCompanyia,
+  invalidarCompanyia
 };

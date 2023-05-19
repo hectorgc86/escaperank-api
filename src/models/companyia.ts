@@ -94,6 +94,16 @@ CompanyiaModel.init(
         key: "id",
       },
     },
+    validada: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    desactivada: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     sequelize,
