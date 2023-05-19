@@ -1,5 +1,7 @@
+import { Op, Sequelize } from "sequelize";
 import { Companyia } from "../interfaces/companyia.interface";
 import { CompanyiaModel } from "../models/companyia";
+import { CiudadModel } from "../models/ciudad";
 
 const obtenerCompanyia = async (id: string) => {
   const record = await CompanyiaModel.findOne({
@@ -23,6 +25,50 @@ const obtenerCompanyias = async () => {
   });
   return records;
 };
+
+
+const obtenerCompanyiasBusqueda = async (
+  busqueda: string,
+) => {
+  const records = await CompanyiaModel.findAll({
+    where: {
+      [Op.or]: [
+        {
+          nombre: { [Op.substring]: busqueda },
+        },
+        {
+          telefono: { [Op.substring]: busqueda },
+        },
+        {
+          web: { [Op.substring]: busqueda },
+        },
+        {
+          "$ciudad.nombre$": {
+            [Op.in]: Sequelize.literal(
+              `(SELECT nombre FROM ciudades WHERE nombre LIKE '%${busqueda}%')`
+            ),
+          },
+        },
+        {
+          "$salas.nombre$": {
+            [Op.in]: Sequelize.literal(
+              `(SELECT nombre FROM salas WHERE nombre LIKE '%${busqueda}%')`
+            ),
+          },
+        },
+      ],
+    },
+    include: ["salas", "ciudad"],
+    subQuery: false,
+  });
+
+  return records;
+};
+
+
+
+
+
 
 const obtenerCompanyiasAValidar = async () => {
   const records = await CompanyiaModel.findAll({
@@ -99,5 +145,6 @@ export {
   validarCompanyia,
   desactivarCompanyia,
   activarCompanyia,
-  invalidarCompanyia
+  invalidarCompanyia,
+  obtenerCompanyiasBusqueda
 };

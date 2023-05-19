@@ -9,13 +9,15 @@ import {
   putValidarCompanyia,
   putInvalidarCompanyia,
   putActivarCompanyia,
-  putDesactivarCompanyia
+  putDesactivarCompanyia,
+  getCompanyiasBusqueda
 } from "../controllers/companyia";
 import { checkSession } from "../middleware/session";
 
 const router = Router();
 
 router.get("/", checkSession, getCompanyias);
+router.get("/buscar", checkSession, getCompanyiasBusqueda);
 router.get("/nuevas", checkSession, getCompanyiasAValidar);
 router.get("/:id", checkSession, getCompanyia);
 router.put("/:id", checkSession, putCompanyia);

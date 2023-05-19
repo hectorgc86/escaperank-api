@@ -10,7 +10,8 @@ import {
   validarCompanyia,
   desactivarCompanyia,
   activarCompanyia,
-  invalidarCompanyia
+  invalidarCompanyia,
+  obtenerCompanyiasBusqueda
 } from "../services/companyia";
 
 const getCompanyia = async (req: Request, res: Response) => {
@@ -26,6 +27,17 @@ const getCompanyia = async (req: Request, res: Response) => {
 const getCompanyias = async (req: Request, res: Response) => {
   try {
     const result = await obtenerCompanyias();
+    res.send(result);
+  } catch (e) {
+    handleHttp(res, "Error obteniendo companyias", e);
+  }
+};
+
+const getCompanyiasBusqueda = async (req: Request, res: Response) => {
+  try {
+    const busqueda = req.query.busqueda as unknown as string;
+
+    const result = await obtenerCompanyiasBusqueda( busqueda);
     res.send(result);
   } catch (e) {
     handleHttp(res, "Error obteniendo companyias", e);
@@ -144,5 +156,6 @@ export {
   putValidarCompanyia,
   putInvalidarCompanyia,
   putActivarCompanyia,
-  putDesactivarCompanyia
+  putDesactivarCompanyia,
+  getCompanyiasBusqueda
 };
