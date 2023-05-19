@@ -60,6 +60,7 @@ const invalidarCompanyia = async (
   companyia: Companyia
 ) => {
   companyia.validada=false;
+  companyia.desactivada=true;
   const record = await companyiaModel.update({ ...companyia });
   return record;
 };
