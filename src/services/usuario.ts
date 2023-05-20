@@ -39,6 +39,9 @@ const obtenerAmigosUsuario = async (id: string) => {
           },
         },
       ],
+      [Op.not]:{
+        id:id
+      }
     },
     include: [
       {
