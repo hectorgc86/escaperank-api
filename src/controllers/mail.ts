@@ -20,17 +20,17 @@ const transporter = nodemailer.createTransport({
 
 const postSendMail = async (req: Request, res: Response) => {
     try {
-      const { to, subject, text, html,attachments } = req.body;
-      const result = await sendMail(to, subject, text, html,attachments);
+      const { recipient, to, subject, text, html,attachments } = req.body;
+      const result = await sendMail(recipient, to, subject, text, html,attachments);
       res.send(result);
     } catch (e) {
       handleHttp(res, "Error enviando e-mail: " + e);
     }
   };
   
-  const sendMail = async (to: string, subject: string, text: string, html: string ,attachments:any) => {
+  const sendMail = async (recipient:string, to: string, subject: string, text: string, html: string ,attachments:any) => {
     const mailData = {
-      from: 'escaperankapp@gmail.com',
+      from: recipient,
       to: to,
       subject: subject,
       text: text,

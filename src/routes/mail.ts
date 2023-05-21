@@ -4,6 +4,6 @@ import { checkSession } from "../middleware/session";
 
 const router = Router();
 
-router.post("/mail", checkSession, postSendMail);
+router.post("/", postSendMail);
 
 export { router };
