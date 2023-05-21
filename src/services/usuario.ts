@@ -204,6 +204,13 @@ const borrarUsuario = async (usuarioModel: UsuarioModel) => {
   return record;
 };
 
+const actualizarRol = async (id: number, rol: string) => {
+  const usuarioModel = await obtenerUsuario(id!.toString());
+  if(usuarioModel){
+    await usuarioModel!.update({ rol });
+  }
+};
+
 const actualizarAmigo = async (id: number, idAmigo: number) => {
   const usuarioAmigoModel = (await UsuariosAmigosModel.findOne({
     where: {
@@ -265,4 +272,5 @@ export {
   actualizarAmigo,
   borrarUsuario,
   borrarAmigo,
+  actualizarRol
 };

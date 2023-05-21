@@ -1,7 +1,7 @@
 import { Login, LoginRequest } from "../interfaces/login.interface";
 import { Usuario } from "../interfaces/usuario.interface";
 import { UsuarioModel } from "../models/usuario";
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize, Transaction, col, fn } from "sequelize";
 import { generarToken } from "../utils/jwt.handle";
 import { RegistroRequest } from "../interfaces/registro.interface";
 import { PerfilModel } from "../models/perfil";
@@ -12,6 +12,7 @@ import { ProvinciaModel } from "../models/provincia";
 import { Provincia } from "../interfaces/provincia.interface";
 import { obtenerCompanyiaPorUsuario } from "./companyia";
 import { Companyia } from "../interfaces/companyia.interface";
+import { sequelize } from "../config/db";
 
 const login = async (loginRequest: LoginRequest) => {
   const usuarioExistente = (await UsuarioModel.findOne({
@@ -42,7 +43,7 @@ const login = async (loginRequest: LoginRequest) => {
         usuarioExistente.id!
       )) as Companyia;
 
-      response.companyiaId = companyia.id;
+      response.companyiaId = companyia !== null ? companyia.id: null;
     }
 
     response.rol = usuarioExistente.rol;
@@ -55,108 +56,133 @@ const registro = async (registroRequest: RegistroRequest) => {
   const { usuario, companyia } = registroRequest;
   const { nick, email, contrasenya, nombre, telefono, nacido } = usuario || {};
 
-  const checkUsuario = await UsuarioModel.findOne({
-    where: {
-      [Op.or]: [{ email }, { nick }],
-    },
-  });
+  try {
+    await sequelize.transaction(async (transaction) => {
+      const checkUsuario = await UsuarioModel.findOne({
+        where: {
+          [Op.or]: [{ email }, { nick }],
+        },
+      });
 
-  if (checkUsuario) {
-    return "Usuario ya existente";
-  }
+      if (checkUsuario) {
+        throw new Error("Usuario ya existente");
+      }
 
-  const usuarioCreado = (await UsuarioModel.create({
-    nick,
-    email,
-    contrasenya,
-    activado: true,
-  })) as Usuario;
+      const usuarioCreado = (await UsuarioModel.create(
+        {
+          nick,
+          email,
+          contrasenya,
+          rol: companyia == null ? "USER": "GAMEMASTER",
+          activado: true,
+        },
+        { transaction }
+      )) as Usuario;
 
-  const perfil = await PerfilModel.create({
-    nombre,
-    telefono,
-    numeroPartidas: 0,
-    partidasGanadas: 0,
-    partidasPerdidas: 0,
-    avatar: "default.png",
-    nacido,
-    usuarioId: usuarioCreado.id,
-  });
+      const perfil = await PerfilModel.create(
+        {
+          nombre,
+          telefono,
+          numeroPartidas: 0,
+          partidasGanadas: 0,
+          partidasPerdidas: 0,
+          avatar: "user.png",
+          nacido,
+          usuarioId: usuarioCreado.id
+        },
+        { transaction }
+      );
 
-  if (companyia) {
-    const ciudadId = await validarLocalizacionCompanyia(
-      companyia.ciudad,
-      companyia.provincia
-    );
+      if (companyia) {
+        const ciudadId = await validarLocalizacionCompanyia(
+          companyia,
+          transaction
+        );
 
-    const companyiaCreada = await CompanyiaModel.create({
-      nombre: companyia.nombre,
-      direccion: companyia.direccion + " " + companyia.numeroLocal,
-      email: companyia.email,
-      telefono: companyia.telefono,
-      web: companyia.web,
-      latitud: companyia.latitud,
-      longitud: companyia.longitud,
-      numeroLocal: companyia.numeroLocal,
-      codigoPostal: companyia.codigoPostal,
-      tripAdvisor: "",
-      facebook: "",
-      googleMaps: "",
-      numeroOpiniones: "",
-      instagram: "",
-      puntuacion: "0",
-      rango: "0",
-      ciudadId,
+        const genId = crypto.randomUUID();
+
+        await CompanyiaModel.create({
+          id: genId,
+          nombre: companyia.nombre,
+          direccion: companyia.direccion + " " + companyia.numeroLocal,
+          email: companyia.email,
+          telefono: companyia.telefono,
+          web: companyia.web,
+          latitud: companyia.latitud,
+          longitud: companyia.longitud,
+          numeroLocal: companyia.numeroLocal,
+          codigoPostal: companyia.codigoPostal,
+          tripAdvisor: "",
+          facebook: "",
+          googleMaps: "",
+          numeroOpiniones: "",
+          instagram: "",
+          puntuacion: "0",
+          rango: "0",
+          usuarioId: usuarioCreado!.id,
+          ciudadId,
+        }, { transaction });
+      }
     });
+  } catch (error: any) {
+    throw error.message;
   }
 };
 
 async function validarLocalizacionCompanyia(
-  ciudad: string | null | undefined,
-  provincia: string | null | undefined
+  companyia: any,
+  transaction: Transaction
 ) {
-  const result = (await CiudadModel.findOne({
-    where: {
-      nombre: {
-        [Op.iLike]: `%${ciudad}%`,
-      },
-      "$provincia.nombre$": {
-        [Op.iLike]: `%${provincia}%`,
-      },
-    },
-    include: [
+  const ciudad: string | null | undefined = companyia.ciudad!;
+  const provincia: string | null | undefined = companyia.provincia!;
+  const latitud: string | null | undefined = companyia.latitud!;
+  const longitud: string | null | undefined = companyia.longitud!;
+
+  let resultProvincia = (await ProvinciaModel.findOne({
+    where: sequelize.where(
+      sequelize.fn("LOWER", sequelize.col("ProvinciaModel.nombre")),
+      "LIKE",
+      `%${ciudad!.toLowerCase()}%`
+    ),
+  })) as Provincia;
+
+  if (resultProvincia == null) {
+    const newProvincia = (await CiudadModel.create(
       {
-        model: ProvinciaModel,
-        as: "provincia",
-        attributes: ["id", "nombre"],
-      },
-    ],
-    limit: 1,
-  })) as Ciudad;
-
-  if (!result) {
-    const checkProvincia = (await ProvinciaModel.findOrCreate({
-      where: {
         nombre: provincia,
+        latitud: latitud,
+        longitud: longitud,
       },
-      defaults: {
-        latitud: "0",
-        longitud: "0",
-      },
-    })) as Provincia;
+      { transaction }
+    )) as Provincia;
 
-    const checkCiudad = (await CiudadModel.create({
-      nombre: ciudad,
-      ciudadOrigen: ciudad,
-      latitud: "0",
-      longitud: "0",
-      provinciaId: checkProvincia.id,
-    })) as Ciudad;
-
-    return checkCiudad.id;
+    resultProvincia = newProvincia;
   }
 
-  return result.id;
+  let resultCiudad = (await CiudadModel.findOne({
+    where: sequelize.where(
+      sequelize.fn("LOWER", sequelize.col("CiudadModel.nombre")),
+      "LIKE",
+      `%${ciudad!.toLowerCase()}%`
+    ),
+  })) as Ciudad;
+
+  if (resultCiudad == null) {
+    const newCiudad = (await CiudadModel.create(
+      {
+        nombre: ciudad,
+        ciudadOrigen: ciudad,
+        latitud: latitud,
+        longitud: longitud,
+        provinciaId: resultProvincia.id,
+      },
+      { transaction }
+    )) as Ciudad;
+
+    resultCiudad = newCiudad;
+  }
+
+  return resultCiudad.id;
 }
 
 export { login, registro };
