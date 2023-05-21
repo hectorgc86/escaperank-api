@@ -13,6 +13,7 @@ import { Provincia } from "../interfaces/provincia.interface";
 import { obtenerCompanyiaPorUsuario } from "./companyia";
 import { Companyia } from "../interfaces/companyia.interface";
 import { sequelize } from "../config/db";
+import * as crypto from "crypto";
 
 const login = async (loginRequest: LoginRequest) => {
   const usuarioExistente = (await UsuarioModel.findOne({

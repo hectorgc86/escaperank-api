@@ -5,15 +5,13 @@ import { CategoriaModel } from "../models/categoria";
 import { TematicaModel } from "../models/tematica";
 import { PublicoModel } from "../models/publico";
 import { DificultadModel } from "../models/dificultad";
-import { Op, Sequelize, Transaction, TransactionOptions } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { Sala } from "../interfaces/sala.interface";
-import { ValoracionModel } from "../models/valoracion";
-import * as crypto from "crypto";
 import { SalasCategoriasModel } from "../models/salas_categorias";
-import {sequelize} from "../config/db";
 import { SalasTematicasModel } from "../models/salas_tematicas";
 import { SalasPublicoModel } from "../models/salas_publico";
 import { imagekit } from "../config/imagekit";
+import * as crypto from "crypto";
 
 const obtenerSala = async (id: string) => {
   const record = await SalaModel.findOne({
