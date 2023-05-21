@@ -68,7 +68,10 @@ const actualizarEquipo = async (equipoModel: EquipoModel, equipo: Equipo) => {
 };
 
 const borrarEquipo = async (equipoModel: EquipoModel) => {
-  const record = await equipoModel.destroy();
+
+  const updatedValues = { activado: false };
+  
+  const record = await equipoModel.update(updatedValues);
   return record;
 };
 

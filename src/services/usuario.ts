@@ -1,10 +1,11 @@
 import { Op, QueryTypes, Sequelize } from "sequelize";
-import { Usuario } from "../interfaces/usuario.interface";
+import { Usuario, UsuarioRequest } from "../interfaces/usuario.interface";
 import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
 import { UsuariosAmigosModel } from "../models/usuarios_amigos";
 import { PerfilModel } from "../models/perfil";
 import { Estado } from "../interfaces/estado.interface";
+import { imagekit } from "../config/imagekit";
 
 const obtenerUsuario = async (id: string) => {
   const record = await UsuarioModel.findOne({
@@ -56,29 +57,32 @@ const obtenerAmigosUsuario = async (id: string) => {
     attributes: { exclude: ["contrasenya"] },
   });
 
-  return Promise.all(records.map( async (record) => {
-    const estado = record.amigos![0].UsuariosAmigosModel.estado;
-    const amigos = null;
-    const amigosComun = await UsuarioModel.sequelize?.query(
-      "SELECT COUNT(*) AS `counter` " +
-        "FROM `usuarios_amigos` AS `ua1` " +
-        "INNER JOIN `usuarios_amigos` AS `ua2` ON `ua1`.`amigo_id` = `ua2`.`amigo_id`" +
-        " WHERE `ua1`.`usuario_id` = :usuarioId AND `ua2`.`usuario_id` = :amigoId AND `ua1`.`estado` = 'aceptado' AND `ua2`.`estado` = 'aceptado'",
-      {
-        replacements: { usuarioId: id , amigoId: record.id},
-        type: QueryTypes.SELECT,
-      }
-    ) as UsuarioModel[] | undefined;
+  return Promise.all(
+    records.map(async (record) => {
+      const estado = record.amigos![0].UsuariosAmigosModel.estado;
+      const amigos = null;
+      const amigosComun = (await UsuarioModel.sequelize?.query(
+        "SELECT COUNT(*) AS `counter` " +
+          "FROM `usuarios_amigos` AS `ua1` " +
+          "INNER JOIN `usuarios_amigos` AS `ua2` ON `ua1`.`amigo_id` = `ua2`.`amigo_id`" +
+          " WHERE `ua1`.`usuario_id` = :usuarioId AND `ua2`.`usuario_id` = :amigoId AND `ua1`.`estado` = 'aceptado' AND `ua2`.`estado` = 'aceptado'",
+        {
+          replacements: { usuarioId: id, amigoId: record.id },
+          type: QueryTypes.SELECT,
+        }
+      )) as UsuarioModel[] | undefined;
 
-    const amigosComunCount = amigosComun && amigosComun.length > 0 ? amigosComun[0].counter : 0;
+      const amigosComunCount =
+        amigosComun && amigosComun.length > 0 ? amigosComun[0].counter : 0;
 
-    return {
-      ...record.toJSON(),
-      estado: estado,
-      amigos: amigos,
-      amigosComun: amigosComunCount,
-    };
-  }));
+      return {
+        ...record.toJSON(),
+        estado: estado,
+        amigos: amigos,
+        amigosComun: amigosComunCount,
+      };
+    })
+  );
 };
 
 const obtenerUsuariosEquipo = async (idEquipo: string) => {
@@ -135,14 +139,62 @@ const insertarAmigo = async (id: number, emailAmigo: string) => {
 
 const actualizarUsuario = async (
   usuarioModel: UsuarioModel,
-  usuario: Usuario
+  usuarioRequest: UsuarioRequest
 ) => {
-  const record = await usuarioModel.update({ ...usuario });
-  return record;
+  let perfilModificado;
+  try {
+    const perfilModel = await PerfilModel.findOne({
+      where: { usuarioId: usuarioModel.id },
+    });
+
+    if (perfilModel) {
+      const genId = crypto.randomUUID();
+      const imgExtension = usuarioRequest.avatar?.split(";")[0].split("/")[1];
+
+      if (usuarioRequest.avatarBase64 != undefined) {
+        usuarioRequest.avatar= genId + "." + imgExtension;
+        await imagekit
+          .upload({
+            folder: "/img/usuarios/",
+            useUniqueFileName: false,
+            file: usuarioRequest.avatarBase64,
+            fileName: genId + "." + imgExtension,
+            extensions: [
+              {
+                name: "google-auto-tagging",
+                maxTags: 5,
+                minConfidence: 95,
+              },
+            ],
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      perfilModificado = await perfilModel.update({ ...usuarioRequest });
+    }
+
+    const record = await usuarioModel.update({ ...usuarioRequest });
+
+    if (perfilModificado) {
+      record.setDataValue("perfil", perfilModificado.dataValues);
+    }
+
+    return record;
+  } catch (error: any) {
+    if (error.parent && error.parent.code === "ER_DUP_ENTRY") {
+      throw new Error("El nick o email ya existen en la base de datos.");
+    } else {
+      throw error;
+    }
+  }
 };
 
 const borrarUsuario = async (usuarioModel: UsuarioModel) => {
-
   const updatedValues = { activado: false };
 
   const record = await usuarioModel.update(updatedValues);

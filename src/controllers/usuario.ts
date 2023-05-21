@@ -104,8 +104,8 @@ const putUsuario = async ({ params, body }: Request, res: Response) => {
     }
     const updateResult = await actualizarUsuario(result, body);
     return res.send(updateResult);
-  } catch (e) {
-    handleHttp(res, "Error actualizando usuario", e);
+  } catch (e: any) {
+    handleHttp(res, e.message as string, e);
   }
 };
 
