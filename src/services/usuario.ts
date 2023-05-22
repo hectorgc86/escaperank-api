@@ -6,6 +6,7 @@ import { UsuariosAmigosModel } from "../models/usuarios_amigos";
 import { PerfilModel } from "../models/perfil";
 import { Estado } from "../interfaces/estado.interface";
 import { imagekit } from "../config/imagekit";
+import { MD5 } from "crypto-js";
 import * as crypto from "crypto";
 
 const obtenerUsuario = async (id: string) => {
@@ -182,6 +183,13 @@ const actualizarUsuario = async (
       perfilModificado = await perfilModel.update({ ...usuarioRequest });
     }
 
+    if(usuarioRequest.contrasenya === ""){
+      delete usuarioRequest.contrasenya;
+    }else{
+      const result = MD5(usuarioRequest.contrasenya!);
+      usuarioRequest.contrasenya = result.toString();
+    }
+
     const record = await usuarioModel.update({ ...usuarioRequest });
 
     if (perfilModificado) {
@@ -275,3 +283,4 @@ export {
   borrarAmigo,
   actualizarRol
 };
+
