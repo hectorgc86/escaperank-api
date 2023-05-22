@@ -13,6 +13,14 @@ const obtenerEquipo = async (id: string) => {
   return record;
 };
 
+const obtenerEquipoNumber = async (id: number) => {
+  const record = await EquipoModel.findOne({
+    where: { id },
+    include: ["noticias", "partidas"],
+  });
+  return record;
+};
+
 const obtenerEquipos = async () => {
   const records = await EquipoModel.findAll({
     include: ["noticias", "partidas"],
@@ -82,4 +90,5 @@ export {
   insertarEquipo,
   actualizarEquipo,
   borrarEquipo,
+  obtenerEquipoNumber
 };
