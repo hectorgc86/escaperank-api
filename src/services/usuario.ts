@@ -1,4 +1,4 @@
-import { Op, QueryTypes, Sequelize } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Usuario, UsuarioRequest } from "../interfaces/usuario.interface";
 import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
@@ -6,6 +6,7 @@ import { UsuariosAmigosModel } from "../models/usuarios_amigos";
 import { PerfilModel } from "../models/perfil";
 import { Estado } from "../interfaces/estado.interface";
 import { imagekit } from "../config/imagekit";
+import * as crypto from "crypto";
 
 const obtenerUsuario = async (id: string) => {
   const record = await UsuarioModel.findOne({
@@ -206,6 +207,13 @@ const borrarUsuario = async (usuarioModel: UsuarioModel) => {
   return record;
 };
 
+const actualizarRol = async (id: number, rol: string) => {
+  const usuarioModel = await obtenerUsuario(id!.toString());
+  if(usuarioModel){
+    await usuarioModel!.update({ rol });
+  }
+};
+
 const actualizarAmigo = async (id: number, idAmigo: number) => {
   const usuarioAmigoModel = (await UsuariosAmigosModel.findOne({
     where: {
@@ -267,4 +275,5 @@ export {
   actualizarAmigo,
   borrarUsuario,
   borrarAmigo,
+  actualizarRol
 };

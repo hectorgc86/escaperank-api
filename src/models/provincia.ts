@@ -34,7 +34,7 @@ ProvinciaModel.init(
 );
 
 CiudadModel.belongsTo(ProvinciaModel, {
-  as: "ciudades",
+  as: "provincia",
   foreignKey: "provinciaId",
 });
 ProvinciaModel.hasMany(CiudadModel, {

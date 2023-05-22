@@ -18,7 +18,7 @@ const postRegistro = async ({ body }: RegistroRequest, res: Response) => {
     const result = await registro(body);
     res.send(result);
   } catch (e) {
-    handleHttp(res, "Error en registro", e);
+    handleHttp(res, e as string);
   }
 };
 

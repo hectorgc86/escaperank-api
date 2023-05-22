@@ -2,6 +2,7 @@ import { Op, Sequelize } from "sequelize";
 import { Companyia } from "../interfaces/companyia.interface";
 import { CompanyiaModel } from "../models/companyia";
 import { CiudadModel } from "../models/ciudad";
+import { actualizarRol } from "./usuario";
 
 const obtenerCompanyia = async (id: string) => {
   const record = await CompanyiaModel.findOne({
@@ -97,7 +98,8 @@ const validarCompanyia = async (
   companyia: Companyia
 ) => {
   companyia.validada=true;
-  const record = await companyiaModel.update({ ...companyia });
+  const record = await companyiaModel.update({ ...companyia }) as Companyia;
+  actualizarRol(record.usuarioId!, "GAMEMASTER");
   return record;
 };
 
@@ -107,7 +109,8 @@ const invalidarCompanyia = async (
 ) => {
   companyia.validada=false;
   companyia.desactivada=true;
-  const record = await companyiaModel.update({ ...companyia });
+  const record = await companyiaModel.update({ ...companyia }) as Companyia;;
+  actualizarRol(record.usuarioId!, "USER");
   return record;
 };
 
