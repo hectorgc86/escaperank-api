@@ -52,6 +52,10 @@ const obtenerNoticiasPorCompanyia = async (companyiaId: string) => {
   return records;
 };
 
+const insertarNoticiaPartida = async (noticia: Noticia) => {
+  const record = await NoticiaModel.create({ ...noticia });
+  return record;
+}
 const insertarNoticia = async (noticia: Noticia) => {
   const genId = crypto.randomUUID();
 
@@ -141,5 +145,6 @@ export {
   insertarNoticia,
   actualizarNoticia,
   borrarNoticia,
-  obtenerNoticiasPorCompanyia
+  obtenerNoticiasPorCompanyia,
+  insertarNoticiaPartida
 };

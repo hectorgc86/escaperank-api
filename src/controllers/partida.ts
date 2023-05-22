@@ -41,6 +41,7 @@ const getPartidasEquipo = async (req: Request, res: Response) => {
 
 const postPartida = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const result = await insertarPartida(req.body);
     res.send({ result, mensaje: "Partida guardada correctamente" });
   } catch (e) {

@@ -90,7 +90,7 @@ const obtenerAmigosUsuario = async (id: string) => {
   );
 };
 
-const obtenerUsuariosEquipo = async (idEquipo: string) => {
+const obtenerUsuariosEquipo = async (idEquipo: any) => {
   const records = await UsuarioModel.sequelize?.query(
     "SELECT * FROM usuarios " +
       "WHERE id IN (" +
@@ -103,6 +103,8 @@ const obtenerUsuariosEquipo = async (idEquipo: string) => {
   );
   return records;
 };
+
+
 
 const insertarUsuario = async (usuario: Usuario) => {
   const record = await UsuarioModel.create({ ...usuario });
