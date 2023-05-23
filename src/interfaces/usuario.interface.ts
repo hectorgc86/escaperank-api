@@ -31,4 +31,5 @@ export interface UsuarioRequest {
 
 export interface Amigo extends Usuario {
   estado?: Estado;
+  amigosComun?: number;
 }

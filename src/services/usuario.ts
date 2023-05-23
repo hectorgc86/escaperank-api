@@ -1,5 +1,5 @@
-import { Op, QueryTypes } from "sequelize";
-import { Usuario, UsuarioRequest } from "../interfaces/usuario.interface";
+import { Op, QueryTypes, Sequelize } from "sequelize";
+import { Amigo, Usuario, UsuarioRequest } from "../interfaces/usuario.interface";
 import { UsuariosAmigos } from "../interfaces/usuarios_amigos.interface";
 import { UsuarioModel } from "../models/usuario";
 import { UsuariosAmigosModel } from "../models/usuarios_amigos";
@@ -8,6 +8,7 @@ import { Estado } from "../interfaces/estado.interface";
 import { imagekit } from "../config/imagekit";
 import { MD5 } from "crypto-js";
 import * as crypto from "crypto";
+import { Perfil } from "../interfaces/perfil.interface";
 
 const obtenerUsuario = async (id: string) => {
   const record = await UsuarioModel.findOne({
@@ -28,66 +29,61 @@ const obtenerUsuarios = async () => {
 };
 
 const obtenerAmigosUsuario = async (id: string) => {
-  const records = await UsuarioModel.findAll({
-    where: {
-      [Op.or]: [
-        {
-          "$amigos->UsuariosAmigosModel.amigo_id$": id,
-          "$amigos->UsuariosAmigosModel.estado$": "aceptado",
-        },
-        {
-          "$amigos->UsuariosAmigosModel.usuario_id$": id,
-          "$amigos->UsuariosAmigosModel.estado$": {
-            [Op.or]: ["aceptado", "pendiente"],
-          },
-        },
-      ],
-      [Op.not]:{
-        id:id
-      }
-    },
-    include: [
-      {
-        model: UsuarioModel,
-        as: "amigos",
-        through: {
-          attributes: ["estado"],
-        },
-      },
-      {
-        model: PerfilModel,
-        as: "perfil",
-      },
-    ],
-    attributes: { exclude: ["contrasenya"] },
-  });
-
-  return Promise.all(
-    records.map(async (record) => {
-      const estado = record.amigos![0].UsuariosAmigosModel.estado;
-      const amigos = null;
-      const amigosComun = (await UsuarioModel.sequelize?.query(
-        "SELECT COUNT(*) AS `counter` " +
-          "FROM `usuarios_amigos` AS `ua1` " +
-          "INNER JOIN `usuarios_amigos` AS `ua2` ON `ua1`.`amigo_id` = `ua2`.`amigo_id`" +
-          " WHERE `ua1`.`usuario_id` = :usuarioId AND `ua2`.`usuario_id` = :amigoId AND `ua1`.`estado` = 'aceptado' AND `ua2`.`estado` = 'aceptado'",
-        {
-          replacements: { usuarioId: id, amigoId: record.id },
-          type: QueryTypes.SELECT,
-        }
-      )) as UsuarioModel[] | undefined;
-
-      const amigosComunCount =
-        amigosComun && amigosComun.length > 0 ? amigosComun[0].counter : 0;
-
-      return {
-        ...record.toJSON(),
-        estado: estado,
-        amigos: amigos,
-        amigosComun: amigosComunCount,
-      };
-    })
+  const records = await UsuarioModel.sequelize?.query(
+    "SELECT " +
+      "u.*, p.*, ua.estado " +
+      "FROM usuarios_amigos ua " +
+      "JOIN usuarios u ON " +
+      "(CASE WHEN ua.usuario_id = :id THEN ua.amigo_id ELSE ua.usuario_id " +
+      "END) = u.id " +
+      "JOIN perfiles p on p.usuario_id = u.id " +
+      "WHERE " +
+      "((ua.usuario_id = :id AND ua.estado = 'aceptado') OR (ua.amigo_id = :id AND ua.estado != 'borrado'))",
+    {
+      replacements: { id },
+      type: QueryTypes.SELECT,
+    }
   );
+
+  return Promise.all(records!.map(async (record: any) => {
+
+    const amigosComun = (await UsuarioModel.sequelize?.query(
+      "SELECT COUNT(*) AS `counter` " +
+        "FROM `usuarios_amigos` AS `ua1` " +
+        "INNER JOIN `usuarios_amigos` AS `ua2` ON `ua1`.`amigo_id` = `ua2`.`amigo_id`" +
+        " WHERE `ua1`.`usuario_id` = :usuarioId AND `ua2`.`usuario_id` = :amigoId AND `ua1`.`estado` = 'aceptado' AND `ua2`.`estado` = 'aceptado'",
+      {
+        replacements: { usuarioId: id, amigoId: record.id },
+        type: QueryTypes.SELECT,
+      }
+    )) as UsuarioModel[] | undefined;
+
+    const amigosComunCount =
+      amigosComun && amigosComun.length > 0 ? amigosComun[0].counter : 0;
+
+    const perfil: Perfil = {
+      nombre: record.nombre,
+      nacido: record.nacido,
+      telefono: record.telefono,
+      avatar: record.avatar,
+      numeroPartidas: record.numero_partidas,
+      partidasGanadas: record.partidas_ganadas,
+      partidasPerdidas: record.partidas_perdidas,
+    };
+
+    const amigo: Amigo = {
+      id: record.id,
+      nick: record.nick,
+      email: record.email,
+      rol: record.rol,
+      activado: record.activado == 1 ? true : false,
+      perfil: perfil,
+      estado: record.estado,
+      amigosComun: amigosComunCount
+    };
+
+    return amigo;
+  }));
 };
 
 const obtenerUsuariosEquipo = async (idEquipo: any) => {
@@ -103,8 +99,6 @@ const obtenerUsuariosEquipo = async (idEquipo: any) => {
   );
   return records;
 };
-
-
 
 const insertarUsuario = async (usuario: Usuario) => {
   const record = await UsuarioModel.create({ ...usuario });
@@ -159,7 +153,7 @@ const actualizarUsuario = async (
       const imgExtension = usuarioRequest.avatar?.split(";")[0].split("/")[1];
 
       if (usuarioRequest.avatarBase64 != undefined) {
-        usuarioRequest.avatar= genId + "." + imgExtension;
+        usuarioRequest.avatar = genId + "." + imgExtension;
         await imagekit
           .upload({
             folder: "/img/usuarios/",
@@ -185,9 +179,9 @@ const actualizarUsuario = async (
       perfilModificado = await perfilModel.update({ ...usuarioRequest });
     }
 
-    if(usuarioRequest.contrasenya === ""){
+    if (usuarioRequest.contrasenya === "") {
       delete usuarioRequest.contrasenya;
-    }else{
+    } else {
       const result = MD5(usuarioRequest.contrasenya!);
       usuarioRequest.contrasenya = result.toString();
     }
@@ -217,7 +211,7 @@ const borrarUsuario = async (usuarioModel: UsuarioModel) => {
 
 const actualizarRol = async (id: number, rol: string) => {
   const usuarioModel = await obtenerUsuario(id!.toString());
-  if(usuarioModel){
+  if (usuarioModel) {
     await usuarioModel!.update({ rol });
   }
 };
@@ -283,6 +277,5 @@ export {
   actualizarAmigo,
   borrarUsuario,
   borrarAmigo,
-  actualizarRol
+  actualizarRol,
 };
-
