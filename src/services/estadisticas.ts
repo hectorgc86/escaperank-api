@@ -109,7 +109,7 @@ const obtenerTiemposSala = async (idSala: string) => {
 
 const obtenerRankingSala = async (idSala: string) => {
   const records = await PartidaModel.sequelize?.query(
-    "SELECT DISTINCT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha,  TIME_FORMAT(SEC_TO_TIME(p.minutos * 60 + p.segundos), '%i:%s') AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND p.equipo_id = e.id  AND s.id = :idSala ORDER BY tiempo ASC",
+    "SELECT sala, id, companyia_id, equipo, fecha, tiempo FROM (SELECT DISTINCT s.nombre AS sala, s.id, s.companyia_id, e.nombre AS equipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha, CASE WHEN p.minutos > 99 THEN CONCAT(p.minutos, ':', LPAD(p.segundos, 2, '0')) ELSE CONCAT(LPAD(FLOOR((p.minutos * 60 + p.segundos) / 60), 2, '0'), ':', LPAD(MOD((p.minutos * 60 + p.segundos), 60), 2, '0')) END AS tiempo FROM partidas p, salas s, equipos e WHERE p.sala_id = s.id AND p.equipo_id = e.id AND s.id = :idSala) AS subquery ORDER BY (SUBSTRING_INDEX(tiempo, ':', 1) * 60 + SUBSTRING_INDEX(tiempo, ':', -1)) ASC",
     {
       replacements: { idSala: idSala },
       type: QueryTypes.SELECT,

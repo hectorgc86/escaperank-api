@@ -2,17 +2,15 @@ import { Partida } from "../interfaces/partida.interface";
 import { PartidaModel } from "../models/partida";
 import { imagekit } from "../config/imagekit";
 import * as crypto from "crypto";
-import { insertarNoticia, insertarNoticiaPartida } from "./noticia";
+import { insertarNoticiaPartida } from "./noticia";
 import { Noticia } from "../interfaces/noticia.interface";
-import { getSala } from "../controllers/sala";
 import { obtenerSala } from "./sala";
-import { obtenerEquipo, obtenerEquipoNumber, obtenerEquiposUsuario } from "./equipo";
+import { obtenerEquipoNumber } from "./equipo";
 import { Sala } from "../interfaces/salas_categorias.interface";
 import { Equipo } from "../interfaces/equipo.interface";
 import { Companyia } from "../interfaces/companyia.interface";
 import { obtenerCompanyia } from "./companyia";
 import { obtenerUsuariosEquipo } from "./usuario";
-import { EquiposUsuarios } from "../interfaces/equipos_usuarios.interface";
 import { Usuario } from "../interfaces/usuario.interface";
 
 const obtenerPartida = async (id: string) => {
@@ -73,7 +71,7 @@ const insertarPartida = async (partida: Partida) => {
     const companyia = (await obtenerCompanyia(sala.companyiaId as string)) as Companyia;
     const equipos_usuarios = (await obtenerUsuariosEquipo(equipo.id)) as Usuario[];
     let usuarios = "";
-    
+
     equipos_usuarios.forEach(async (usuario) => {
       usuarios+= usuario.nick+", ";
       });
@@ -82,7 +80,7 @@ const insertarPartida = async (partida: Partida) => {
     fecha: partida.fecha,
     titular: "Se ha jugado en "+ sala.nombre,
     textoCorto: "El equipo: "+equipo.nombre+" ha jugado una nueva partida en "+ companyia.ciudad?.nombre,
-    textoLargo: "¡"+usuarios+" han realizado un tiempo de "+partida.minutos+" minutos con "+partida.segundos+" segundos! Los equipos de EscapeRank y"+ companyia.nombre +"os estamos muy agradecidos.",
+    textoLargo: "¡"+usuarios+" han realizado un tiempo de "+partida.minutos+" minutos con "+partida.segundos+" segundos! Los equipos de EscapeRank y "+ companyia.nombre +" os estamos muy agradecidos.",
     imagen:partida.imagen,
     promocionada:false,
     equipoId: partida.equipoId,

@@ -3,9 +3,6 @@ import { Companyia } from "./companyia.interface";
 import { Dificultad } from "./dificultad.interface";
 import { Partida } from "./partida.interface";
 import { Publico } from "./publico.interface";
-import { SalasCategorias } from "./salas_categorias.interface";
-import { SalasPublico } from "./salas_publico.interface";
-import { SalasTematicas } from "./salas_tematicas.interface";
 import { Tematica } from "./tematica.interface";
 import { Valoracion } from "./valoracion.interface";
 
